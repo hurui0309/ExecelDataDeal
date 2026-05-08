@@ -1,0 +1,57 @@
+# ───── Python ─────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+
+# 打包/发布
+build/
+dist/
+*.egg-info/
+*.egg
+pip-log.txt
+
+# 测试 / 类型检查 / 覆盖率
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ───── 项目运行产物 ─────
+# 日志（含 RotatingFileHandler 切片）
+data_to_db/logs/
+*.log
+*.log.*
+
+# 待清洗的源数据 / 临时数据目录
+data_to_db/to_fix_data/
+data_to_db/data/
+data_to_db/tmp/
+
+# Excel 临时文件
+~$*.xlsx
+~$*.xls
+
+# 本地 SQLite / 调试导出
+*.db
+*.sqlite
+*.sqlite3
+
+# ───── IDE / 系统 ─────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini

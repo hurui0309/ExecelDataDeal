@@ -1,0 +1,89 @@
+# ===== 数据库配置 =====
+database:
+  host: "10.107.97.155"
+  port: 6004
+  user: "cfpd_mvss"
+  password: "1ad3!AD#"
+  database: "cfpd_mvss"
+  charset: "utf8mb4"
+
+# ===== 大模型 API 配置 =====
+llm:
+  # 模型配置
+  standard:
+    api_base: "http://172.21.3.106/v1/"
+    api_key: "sk--F915XWEzrkMwRQBYpYErg"
+    model: "deepseek-v3.2"
+  # 生成参数
+  temperature: 0.1
+  max_tokens: 4096
+
+# ===== 文件扫描配置 =====
+scan:
+  # 数据根目录
+  data_dir: "./to_fix_data"
+  # 支持的文件扩展名
+  extensions: [".xlsx", ".xls"]
+  # 跳过的文件名前缀（如 Excel 临时文件）
+  skip_prefixes: ["~$"]
+  # 跳过的目录名
+  skip_dirs: []
+
+# ===== 解析配置 =====
+parse:
+  # excel_preview 读取的预览行数（首次）
+  preview_rows: 20
+  # 置信度不足时，扩展预览行数（只扩展一次，不再逐步扩大）
+  preview_rows_extended: 50
+  # 触发扩展预览的置信度阈值（低于此值则重试）
+  confidence_threshold: 0.8
+  # 纵向预览行数（给分类器看，帮助识别表头/数据起始行）
+  first_col_preview_rows: 500
+  # 纵向预览列数（给分类器看）
+  first_col_preview_cols: 2
+  # 纵表子表检测时，给模型看的列数
+  subtable_detect_cols: 3
+  # 翻译时传给 LLM 的预览行数
+  translate_preview_rows: 15
+  # 批量写入 MySQL 的行数
+  batch_size: 500
+  # ODS 层字段默认类型和长度
+  default_varchar_length: 512
+  # 字段名最大长度
+  max_column_name_length: 64
+  # 表名最大长度
+  max_table_name_length: 64
+  # 单位行检测用的正则模式列表（用于排除纯单位行，避免误判为表头行）
+  unit_patterns:
+    - '^万人?$'
+    - '^个$'
+    - '^%$'
+    - '^元$'
+    - '^万户$'
+    - '^万公顷$'
+    - '^万吨$'
+    - '^万头$'
+    - '^万只$'
+    - '^张$'
+    - '^间$'
+    - '^所$'
+    - '^亿$'
+    - '^亿元$'
+    - '^亿元?$'
+    - '^万$'
+    - '^人$'
+    - '^万人$'
+    - '^户$'
+    - '^公斤$'
+    - '^千克$'
+    - '^吨$'
+    - '^立方米$'
+
+# ===== 日志配置 =====
+logging:
+  level: "INFO"
+  # 日志文件路径（支持 strftime 时间模板）
+  file: "./logs/datadeal_%Y%m%d_%H%M%S.log"
+  # 日志轮转配置
+  max_bytes: 10485760   # 单文件最大 10MB
+  backup_count: 30      # 保留 30 个轮转备份
