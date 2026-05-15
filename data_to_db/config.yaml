@@ -1,19 +1,19 @@
 # ===== 数据库配置 =====
 database:
-  host: "10.107.97.155"
-  port: 6004
-  user: "cfpd_mvss"
-  password: "1ad3!AD#"
-  database: "cfpd_mvss"
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "123456"
+  database: "ods_data"
   charset: "utf8mb4"
 
 # ===== 大模型 API 配置 =====
 llm:
   # 模型配置
   standard:
-    api_base: "http://172.21.3.106/v1/"
-    api_key: "sk--F915XWEzrkMwRQBYpYErg"
-    model: "deepseek-v3.2"
+    api_base: "http://chat.hzau.edu.cn:3000/v1/"
+    api_key: "sk-dtrQQelwfcectVDL4f485e9801104cD382Ec71Ae62A16042"
+    model: "qwen3-32b"
   # 生成参数
   temperature: 0.1
   max_tokens: 4096
@@ -21,7 +21,7 @@ llm:
 # ===== 文件扫描配置 =====
 scan:
   # 数据根目录
-  data_dir: "./to_fix_data"
+  data_dir: "../sample_files"
   # 支持的文件扩展名
   extensions: [".xlsx", ".xls"]
   # 跳过的文件名前缀（如 Excel 临时文件）
@@ -49,6 +49,8 @@ parse:
   batch_size: 500
   # ODS 层字段默认类型和长度
   default_varchar_length: 512
+  # 大宽表列数阈值（超过此列数直接 SKIP，避免 MySQL 建表失败）
+  max_columns: 100
   # 字段名最大长度
   max_column_name_length: 64
   # 表名最大长度
