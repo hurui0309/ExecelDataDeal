@@ -260,6 +260,35 @@ class Orchestrator:
                     self.stats["error"] += 1
                     return
 
+                # 大宽表检测：列数超过阈值直接 SKIP
+                max_columns = self.config["parse"].get("max_columns", 300)
+                sheet_col_count = sheet_preview.get("max_col", 0)
+                if sheet_col_count > max_columns:
+                    logger.info(
+                        f"    大宽表检测: {sheet_col_count} 列 > {max_columns} 列阈值，标记 SKIP"
+                    )
+                    self._log_parse_result(conn, {
+                        "source_path": file_path,
+                        "source_filename": source_filename,
+                        "sheet_name": sheet_name,
+                        "sheet_index": sheet_index,
+                        "parse_strategy": "SKIP",
+                        "agent": "Classifier",
+                        "status": "SKIP",
+                        "table_name": _safe_error_table_name(
+                            "SKIP", source_filename, sheet_name, sheet_index
+                        ),
+                        "error_message": f"大宽表({sheet_col_count}列)，超过阈值({max_columns}列)，MySQL 不支持",
+                        "file_size_bytes": file_size,
+                        "is_xls": is_xls,
+                        "has_merged_cells": sheet_preview.get("merged_count", 0) > 0,
+                        "merged_cells_count": sheet_preview.get("merged_count", 0),
+                        "parse_time_ms": int((time.time() - start_time) * 1000),
+                    }, raw_row_count=raw_row_count)
+                    logger.info(f"    [OK] 跳过: 大宽表({sheet_col_count}列)")
+                    self.stats["skip"] += 1
+                    return
+
                 t_classify = time.time()
                 fc_info = first_col_cache.get(sheet_index, {})
                 decision = classifier_run(
@@ -399,6 +428,12 @@ class Orchestrator:
         subtable_results = worker_result.get("subtable_results")
         if subtable_results:
             for st_idx, st in enumerate(subtable_results):
+                # 子表空表防护
+                st_success = st.get("success", False)
+                if st_success and st.get("rows_written", 0) == 0:
+                    st_success = False
+                    st["skip"] = True
+                    logger.info(f"    [SKIP] 子表空表: {st.get('table_name')} 解析成功但 0 行数据")
                 self._log_parse_result(conn, {
                     "source_path": file_path,
                     "source_filename": source_filename,
@@ -408,7 +443,7 @@ class Orchestrator:
                     "subtable_label": st.get("label"),
                     "parse_strategy": strategy,
                     "agent": "Worker",
-                    "status": "SUCCESS" if st.get("success") else "ERROR",
+                    "status": "SKIP" if st.get("skip") else ("SUCCESS" if st_success else "ERROR"),
                     "table_name": st["table_name"],
                     "actual_row_count": st.get("rows_written", 0),
                     "column_count": None,
@@ -423,8 +458,13 @@ class Orchestrator:
                 }, raw_row_count=raw_row_count)
         else:
             table_name = worker_result.get("table_name") or final_table_name or _safe_error_table_name(
-                "ERROR", source_filename, sheet_name, sheet_index
+                "SKIP" if worker_result.get("skip") else "ERROR", source_filename, sheet_name, sheet_index
             )
+            is_skip = worker_result.get("skip", False)
+            # 空表防护：success=True 但实际写入 0 行时，标记为 SKIP
+            if not is_skip and worker_result.get("success") and worker_result.get("rows_written", 0) == 0:
+                is_skip = True
+                logger.info(f"    [SKIP] 空表: 解析成功但 0 行数据，自动标记 SKIP")
             self._log_parse_result(conn, {
                 "source_path": file_path,
                 "source_filename": source_filename,
@@ -432,7 +472,7 @@ class Orchestrator:
                 "sheet_index": sheet_index,
                 "parse_strategy": strategy,
                 "agent": "Worker",
-                "status": "SUCCESS" if worker_result.get("success") else "ERROR",
+                "status": "SKIP" if is_skip else ("SUCCESS" if worker_result.get("success") else "ERROR"),
                 "table_name": table_name,
                 "actual_row_count": worker_result.get("rows_written", 0),
                 "column_count": None,
@@ -446,7 +486,10 @@ class Orchestrator:
                 "parse_time_ms": elapsed,
             }, raw_row_count=raw_row_count)
 
-        if worker_result.get("success"):
+        if worker_result.get("skip"):
+            self.stats["skip"] += 1
+            logger.info(f"    [OK] 跳过: 大宽表 — {worker_result.get('error', '')}")
+        elif worker_result.get("success"):
             self.stats["success"] += 1
             display_names = final_table_name
             if subtable_results and len(subtable_results) > 1:

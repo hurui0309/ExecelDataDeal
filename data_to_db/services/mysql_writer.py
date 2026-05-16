@@ -16,6 +16,12 @@ MYSQL_IDENT_MAX = 64
 MYSQL_TABLE_COMMENT_MAX = 1024
 # 默认 VARCHAR 长度（写入超长会自动扩宽）
 DEFAULT_VARCHAR_LEN = 512
+# MySQL 行大小限制（不含 BLOB/TEXT），utf8mb4 下 VARCHAR(N) 占 4*N 字节
+MYSQL_MAX_ROW_SIZE = 65535
+# utf8mb4 每字符最大字节数
+CHARSET_BYTES_PER_CHAR = 4
+# 大宽表列数阈值（超过此值直接 SKIP，MySQL 行格式限制）
+WIDE_TABLE_COLUMN_LIMIT = 100
 
 
 def sanitize_column_name(name: str) -> str:
@@ -30,6 +36,9 @@ def sanitize_column_name(name: str) -> str:
     s = s.strip("_")
     if not s:
         return "col_empty"
+    # 纯数字列名加 y_ 前缀（如 1978 → y_1978），避免 SQL 查询混淆
+    if s.isdigit():
+        s = "y_" + s
     if len(s) > MYSQL_IDENT_MAX:
         s = s[:MYSQL_IDENT_MAX]
     return s
@@ -110,6 +119,18 @@ def run(table_name: str, columns: list[str], rows: list[list],
     clean_columns = make_unique_columns(clean_columns)
     clean_columns = [rename_id_col(c) for c in clean_columns]
 
+    # 大宽表检测：列数超过阈值直接返回 SKIP，避免建表失败
+    if len(clean_columns) > WIDE_TABLE_COLUMN_LIMIT:
+        reason = f"大宽表({len(clean_columns)}列)，超过阈值({WIDE_TABLE_COLUMN_LIMIT}列)，MySQL 不支持"
+        logger.warning(f"跳过建表 table={table_name}: {reason}")
+        return {
+            "success": False,
+            "table_name": table_name,
+            "rows_written": 0,
+            "error": reason,
+            "skip": True,
+        }
+
     # 重新映射 column_comments：原始列名 → 清洗后列名
     remapped_comments = {
         clean_col: column_comments[orig_col]
@@ -152,14 +173,26 @@ def run(table_name: str, columns: list[str], rows: list[list],
         cursor.execute(f"DROP TABLE IF EXISTS `{table_name}`")
         conn.commit()
 
+        # 判断是否需要用 TEXT 替代 VARCHAR：
+        # MySQL 行大小限制 65535 字节（不含 BLOB/TEXT），utf8mb4 下 VARCHAR(N) 占 4*N 字节
+        # 如果数据列 × VARCHAR(512) × 4 超出行限制，则全部改用 TEXT
+        estimated_row_bytes = len(clean_columns) * DEFAULT_VARCHAR_LEN * CHARSET_BYTES_PER_CHAR
+        use_text = estimated_row_bytes > MYSQL_MAX_ROW_SIZE
+        if use_text:
+            logger.info(
+                f"数据列 {len(clean_columns)} × VARCHAR({DEFAULT_VARCHAR_LEN}) × {CHARSET_BYTES_PER_CHAR}B = "
+                f"{estimated_row_bytes}B > {MYSQL_MAX_ROW_SIZE}B 行限制，改用 TEXT 类型"
+            )
+
         col_defs = ["`id` INT AUTO_INCREMENT PRIMARY KEY"]
+        col_type = "TEXT" if use_text else f"VARCHAR({DEFAULT_VARCHAR_LEN})"
         for col in clean_columns:
             comment = column_comments.get(col, "")
             if comment:
                 safe_comment = comment.replace("'", "\\'")
-                col_defs.append(f"`{col}` VARCHAR({DEFAULT_VARCHAR_LEN}) COMMENT '{safe_comment}'")
+                col_defs.append(f"`{col}` {col_type} COMMENT '{safe_comment}'")
             else:
-                col_defs.append(f"`{col}` VARCHAR({DEFAULT_VARCHAR_LEN})")
+                col_defs.append(f"`{col}` {col_type}")
 
         col_defs.append("`_source_file` VARCHAR(1024) COMMENT '源文件路径'")
         col_defs.append("`_sheet_name` VARCHAR(256) COMMENT 'Sheet名'")
@@ -178,15 +211,16 @@ def run(table_name: str, columns: list[str], rows: list[list],
         if table_comment:
             create_sql = (
                 f"CREATE TABLE `{table_name}` ({', '.join(col_defs)}) "
-                f"DEFAULT CHARSET=utf8mb4 COMMENT='{table_comment}'"
+                f"DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='{table_comment}'"
             )
         else:
-            create_sql = f"CREATE TABLE `{table_name}` ({', '.join(col_defs)}) DEFAULT CHARSET=utf8mb4"
+            create_sql = f"CREATE TABLE `{table_name}` ({', '.join(col_defs)}) DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC"
         cursor.execute(create_sql)
         conn.commit()
 
         rows_written = _batch_insert_with_auto_widen(
-            cursor, table_name, insert_columns, enriched_rows, conn, batch_size
+            cursor, table_name, insert_columns, enriched_rows, conn, batch_size,
+            data_col_type=col_type
         )
 
         return {
@@ -218,35 +252,37 @@ def run(table_name: str, columns: list[str], rows: list[list],
             pass
 
 
-def _batch_insert_with_auto_widen(cursor, table_name, columns, rows, conn, batch_size=500):
-    """批量写入，自动扩宽超长字段。"""
+def _batch_insert_with_auto_widen(cursor, table_name, columns, rows, conn, batch_size=500, data_col_type="VARCHAR"):
+    """批量写入，自动扩宽超长字段（TEXT 类型列跳过扩宽）。"""
     if not rows:
         return 0
 
-    # 预检查每列最大长度
-    col_max_len = {col: 0 for col in columns}
-    for row in rows:
-        for col_idx, col in enumerate(columns):
-            val = row[col_idx] if col_idx < len(row) else None
-            if val is None:
-                continue
-            length = len(str(val))
-            if length > col_max_len[col]:
-                col_max_len[col] = length
+    # TEXT 类型无需预检查长度和扩宽
+    if data_col_type != "TEXT":
+        # 预检查每列最大长度
+        col_max_len = {col: 0 for col in columns}
+        for row in rows:
+            for col_idx, col in enumerate(columns):
+                val = row[col_idx] if col_idx < len(row) else None
+                if val is None:
+                    continue
+                length = len(str(val))
+                if length > col_max_len[col]:
+                    col_max_len[col] = length
 
-    # 预扩宽（只对数据列，元数据列已在 CREATE TABLE 时定好类型）
-    for col, max_len in col_max_len.items():
-        if max_len > DEFAULT_VARCHAR_LEN and not col.startswith("_"):
-            new_len = ((max_len // DEFAULT_VARCHAR_LEN) + 1) * DEFAULT_VARCHAR_LEN
-            try:
-                _widen_column(cursor, table_name, col, new_len)
-                conn.commit()
-            except Exception as e:
-                logger.warning(f"扩宽字段失败 {table_name}.{col} → VARCHAR({new_len}): {e}")
+        # 预扩宽（只对数据列，元数据列已在 CREATE TABLE 时定好类型）
+        for col, max_len in col_max_len.items():
+            if max_len > DEFAULT_VARCHAR_LEN and not col.startswith("_"):
+                new_len = ((max_len // DEFAULT_VARCHAR_LEN) + 1) * DEFAULT_VARCHAR_LEN
                 try:
-                    conn.rollback()
-                except Exception:
-                    pass
+                    _widen_column(cursor, table_name, col, new_len)
+                    conn.commit()
+                except Exception as e:
+                    logger.warning(f"预扩宽字段失败 {table_name}.{col} → VARCHAR({new_len}): {e}")
+                    try:
+                        conn.rollback()
+                    except Exception:
+                        pass
 
     col_str = ", ".join([f"`{c}`" for c in columns])
     placeholders = ", ".join(["%s"] * len(columns))
@@ -270,6 +306,10 @@ def _batch_insert_with_auto_widen(cursor, table_name, columns, rows, conn, batch
             success += len(fixed_batch)
         except pymysql.err.DataTooLong:
             conn.rollback()
+            if data_col_type == "TEXT":
+                # TEXT 仍超长，尝试升级为 MEDIUMTEXT 后逐行重试
+                success += _insert_one_by_one_upgrade_text(cursor, table_name, columns, fixed_batch, conn, sql)
+                continue
             success += _insert_one_by_one_with_widen(cursor, table_name, columns, fixed_batch, conn, sql)
         except Exception as e:
             logger.error(
@@ -282,6 +322,43 @@ def _batch_insert_with_auto_widen(cursor, table_name, columns, rows, conn, batch
                 pass
 
     return success
+
+
+def _insert_one_by_one_upgrade_text(cursor, table_name, columns, batch, conn, sql) -> int:
+    """逐行写入，遇到 DataTooLong 时将超长 TEXT 列升级为 MEDIUMTEXT。"""
+    written = 0
+    for row in batch:
+        while True:
+            try:
+                cursor.execute(sql, row)
+                conn.commit()
+                written += 1
+                break
+            except pymysql.err.DataTooLong:
+                conn.rollback()
+                # 找到超长列，升级为 MEDIUMTEXT
+                upgraded = False
+                for col_idx, col in enumerate(columns):
+                    if col.startswith("_"):
+                        continue
+                    val = row[col_idx] if col_idx < len(row) else None
+                    if val is not None and len(str(val)) > 65535:
+                        try:
+                            upgrade_sql = f"ALTER TABLE `{table_name}` MODIFY COLUMN `{col}` MEDIUMTEXT"
+                            cursor.execute(upgrade_sql)
+                            conn.commit()
+                            upgraded = True
+                        except Exception as e:
+                            logger.warning(f"升级 {table_name}.{col} 为 MEDIUMTEXT 失败: {e}")
+                            conn.rollback()
+                if not upgraded:
+                    logger.error(f"无法定位超长字段或升级失败，跳过 table={table_name} row={row[:5]}…")
+                    break
+            except Exception as e:
+                logger.error(f"单行写入失败 table={table_name}: {e}", exc_info=False)
+                conn.rollback()
+                break
+    return written
 
 
 def _insert_one_by_one_with_widen(cursor, table_name, columns, batch, conn, sql) -> int:
@@ -328,5 +405,28 @@ def _insert_one_by_one_with_widen(cursor, table_name, columns, batch, conn, sql)
 
 
 def _widen_column(cursor, table_name, col_name, new_length):
-    sql = f"ALTER TABLE `{table_name}` MODIFY COLUMN `{col_name}` VARCHAR({new_length})"
+    """扩宽列到 VARCHAR(new_length)，若因行大小超限失败则降级为 TEXT，再失败降级为 MEDIUMTEXT。"""
+    try:
+        sql = f"ALTER TABLE `{table_name}` MODIFY COLUMN `{col_name}` VARCHAR({new_length})"
+        cursor.execute(sql)
+        return
+    except Exception as e:
+        logger.warning(f"扩宽为 VARCHAR({new_length}) 失败 {table_name}.{col_name}: {e}，尝试降级为 TEXT")
+        try:
+            cursor.connection.rollback()
+        except Exception:
+            pass
+    # 降级为 TEXT
+    try:
+        sql = f"ALTER TABLE `{table_name}` MODIFY COLUMN `{col_name}` TEXT"
+        cursor.execute(sql)
+        return
+    except Exception as e:
+        logger.warning(f"降级为 TEXT 失败 {table_name}.{col_name}: {e}，尝试降级为 MEDIUMTEXT")
+        try:
+            cursor.connection.rollback()
+        except Exception:
+            pass
+    # 降级为 MEDIUMTEXT
+    sql = f"ALTER TABLE `{table_name}` MODIFY COLUMN `{col_name}` MEDIUMTEXT"
     cursor.execute(sql)

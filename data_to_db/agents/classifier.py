@@ -14,7 +14,7 @@ logger = logging.getLogger("datadeal")
 _STRATEGY_LIST_PROMPT = """请判断这个 sheet 的数据格式属于哪种已知策略：
 
 {strategy_descriptions}
-- SKIP: 目录/空文件/无有效数据/纯说明备注页（如仅含"搜索马克数据网"等说明文字，无表格结构）
+- SKIP: 目录/空文件/无有效数据/纯说明备注页（如仅含"搜索马克数据网"等说明文字，无表格结构，或sheet名为"必看说明"/"数据说明"/"使用说明"等纯文字说明sheet）
 - UNKNOWN: 无法判断，需要深入分析
 
 判断要点：
