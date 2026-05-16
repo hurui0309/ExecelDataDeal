@@ -75,10 +75,25 @@ description: >
 ### A2: 拉取最新代码
 
 ```bash
-cd d:/projects/ExecelDataDeal && git pull
+cd d:/projects/ExecelDataDeal
+
+# 确保在开发分支上工作
+git checkout feature_codebuddy_20260508
+
+# 拉取最新代码
+git pull origin feature_codebuddy_20260508
 ```
 
-**冲突处理**：如有合并冲突，解决后提交 `git commit -m "merge: 解决 git pull 冲突"`
+**冲突处理**：如有合并冲突，按以下步骤处理：
+1. 列出冲突文件：`git diff --name-only --diff-filter=U`
+2. 查看冲突内容：`git diff <file>`
+3. 根据改动性质决定保留策略：
+   - **仅远程改了该区域**：保留远程改动
+   - **仅本地改了该区域**：保留本地改动
+   - **两边都改了同一行**：保留本地改动，同时手动合并远程新增的内容
+   - **冲突过于复杂**：停止，提示用户手动处理
+4. `git add <resolved_files>`
+5. `git commit -m "merge: 解决 git pull 冲突"`
 
 ### A3: 清理旧 parse_log 记录
 
@@ -245,9 +260,21 @@ cd d:/projects/ExecelDataDeal && python .codebuddy/skills/optimize-parse/scripts
 
 ```bash
 cd d:/projects/ExecelDataDeal
-git add data_to_db/ .codebuddy/
+
+# 确保在开发分支上
+git checkout feature_codebuddy_20260508
+
+# 确保有 git 用户配置（新同学首次需设置）
+git config user.name "你的名字"
+git config user.email "你的邮箱"
+
+# 添加改动
+git add data_to_db/ .codebuddy/ optimize_reports/
+git status  # 确认变更内容
 git commit -m "fix: [详细描述本次优化内容]"
-git push
+
+# 推送
+git push origin feature_codebuddy_20260508
 ```
 
 ---

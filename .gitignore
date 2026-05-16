@@ -47,6 +47,10 @@ data_to_db/tmp/
 *.sqlite
 *.sqlite3
 
+# ───── 报告 ─────
+# review_reports/ 需要推到仓库，不忽略
+# optimize_reports/ 需要推到仓库，不忽略
+
 # ───── IDE / 系统 ─────
 .idea/
 .vscode/
