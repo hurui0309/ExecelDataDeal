@@ -11,8 +11,8 @@ logger = logging.getLogger("datadeal")
 # 可重试的异常类型
 _RETRYABLE_ERRORS = (RateLimitError, APIConnectionError)
 # 不可重试的异常（如鉴权失败），但也尝试重试一次（可能是临时问题）
-_MAX_RETRIES = 2
-_RETRY_DELAY = 2  # 秒
+_MAX_RETRIES = 3
+_RETRY_DELAY = 5  # 秒
 
 # role 名称兼容映射：旧名称 → 新名称
 _ROLE_MAP = {
@@ -43,6 +43,7 @@ class LLMClient:
         return OpenAI(
             api_key=cfg.get("api_key", ""),
             base_url=cfg.get("api_base", ""),
+            timeout=120.0,  # 120秒超时，适应大模型慢响应
         )
 
     def _resolve_role(self, role: str) -> str:

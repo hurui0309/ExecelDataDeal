@@ -68,7 +68,7 @@ def read_sheet(file_path: str, sheet_name, read_border: bool = False):
 
     返回:
         (data, row_has_hborder)
-        - data: list[list] — 二维数据，合并单元格已填充
+        - data: list[list] — 二维数据，合并单元格已填充，续行已合并
         - row_has_hborder: list[bool] — 仅当 read_border=True 时有值，否则为空列表
 
     实现细节：使用 (file_path, sheet_name, read_border) + 文件 mtime
@@ -91,6 +91,8 @@ def read_sheet(file_path: str, sheet_name, read_border: bool = False):
         result = _read_xls(file_path, sheet_name, read_border)
     else:
         result = _read_xlsx(file_path, sheet_name, read_border)
+
+    data, row_has_hborder = result
 
     if mtime is not None and result and result[0]:
         # 只缓存非空结果，避免读失败被一直缓存

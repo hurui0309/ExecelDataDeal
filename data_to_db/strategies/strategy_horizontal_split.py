@@ -348,6 +348,13 @@ def _extract_region(data: list, header_start: int, header_end: int,
         if header_end_border is not None:
             header_end = header_end_border
             header_end = _adjust_header_end_if_data_row(data, header_end)
+            # 额外验证：用内容分析确认 header_end 不在数据行中
+            # 如果内容分析检测到的 header_end 与框线差异过大，以内容分析为准
+            content_header_start, content_header_end = _detect_header_range(data)
+            if content_header_end is not None and header_end is not None:
+                # 如果框线 header_end 远大于内容分析 header_end，说明框线可能误判
+                if header_end > content_header_end + 2:
+                    header_end = content_header_end
             # 从 header_end 向上找 header_start（结合框线信号）
             header_start = _find_header_start_from_end(data, header_end, row_has_hborder)
         else:
