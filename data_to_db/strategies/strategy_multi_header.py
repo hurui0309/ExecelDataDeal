@@ -133,6 +133,13 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
             else:
                 header_start, header_end = _detect_header_range(data)
 
+    # 裁剪 header 范围底部：排除分类标题行（仅首列有值的行）
+    # 分类标题行如"一、农垦系统"、"力生产量"等不是真正的列名行，
+    # 将它们包含在 header 范围内会导致分类文本被合并到首列列名中
+    n_cols_check = max(len(r) for r in data[header_start:header_end + 1]) if header_start <= header_end else 0
+    while header_end > header_start and _is_category_header_row(data, header_end, n_cols_check):
+        header_end -= 1
+
     # 合并多行表头
     columns = _merge_multi_row_header(data, header_start, header_end)
 
@@ -183,7 +190,7 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
         columns = column_names
 
     # 合并层级指标列（如"人口与就业→人口(万人)→总人口"）
-    # 用自动检测的 data_start 校验 LLM 给的值，避免 LLM 偏大导致首行数据丢失
+    # 用自动检测的 data_start 校验 LLM/框线 给的值，避免 LLM 偏大导致首行数据丢失
     actual_data_start = header_end + 1
     auto_data_start = _find_data_start_row(data)
     if auto_data_start >= 0 and auto_data_start < actual_data_start:
@@ -197,6 +204,10 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
         columns = [rename_id_col(c) for c in columns]
         if column_names and len(column_names) == len(columns):
             columns = column_names
+    elif auto_data_start >= 0 and auto_data_start > actual_data_start:
+        # 自动检测的 data_start 更晚，说明 header_end+1 到 auto_data_start 之间
+        # 存在分类标题行（如"一、平均每一农村劳动力生产量"），应跳过
+        actual_data_start = auto_data_start
 
     # 纵向子表检测：如果数据区中间存在空行+新标题+新表头的模式，
     # 则拆分为多个子表（覆盖 Classifier 未选 vertical_subtable 的场景）
@@ -234,6 +245,29 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
     }
 
 
+def _is_category_header_row(data: list, row_idx: int, n_cols: int) -> bool:
+    """
+    判断某行是否为"分类标题行"：仅第一列有文本值，其余列均为空。
+    
+    分类标题行（如"一、农垦系统"、"二、侨办系统"）不是真正的列名行，
+    其文本不应合并到列名中。典型特征：
+    - 第 0 列有非空文本
+    - 第 1~N 列全部为 None 或空白
+    """
+    if row_idx < 0 or row_idx >= len(data):
+        return False
+    row = data[row_idx]
+    # 第一列必须有文本
+    if not row or row[0] is None or not str(row[0]).strip():
+        return False
+    # 其余列必须全部为空
+    for col_idx in range(1, n_cols):
+        val = row[col_idx] if col_idx < len(row) else None
+        if val is not None and str(val).strip():
+            return False
+    return True
+
+
 def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> list:
     """
     多行表头合并。
@@ -242,6 +276,8 @@ def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> l
     如果某行中某列的值与相邻列相同（来自同一合并单元格），
     且下方行该列有独立的细分值，则上方行该列的值属于"父级标题"，
     不应拼入该列的最终名称。
+    
+    新增：跳过分类标题行（仅首列有值的行），避免将分类标题合并到列名中。
     """
     from services.mysql_writer import sanitize_column_name
 
@@ -266,12 +302,21 @@ def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> l
     if not header_rows:
         return []
 
+    # 预计算分类标题行集合（仅首列有值的行），这些行不参与列名合并
     n_cols = max(len(r) for r in header_rows)
+    category_rows = set()
+    for row_idx in range(header_start, header_end + 1):
+        if _is_category_header_row(data, row_idx, n_cols):
+            category_rows.add(row_idx)
+
     merged_headers = []
 
     for col_idx in range(n_cols):
         parts = []
         for row_idx in range(header_start, header_end + 1):
+            # 跳过分类标题行：它们的文本不属于列名
+            if row_idx in category_rows:
+                continue
             val = data[row_idx][col_idx] if col_idx < len(data[row_idx]) else None
             if val is not None and str(val).strip():
                 stripped = re.sub(r' {2,}', ' ', str(val).strip())

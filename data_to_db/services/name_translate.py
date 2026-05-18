@@ -146,6 +146,11 @@ def run(file_path: str, sheet_name: str, preview_data: list, column_hints: list 
                             f"{diff_semantic[:5]}{'...' if len(diff_semantic) > 5 else ''}"
                         )
 
+                    # 三次校验：对 LLM 翻译退化为 col_N 模式的列名，用 sanitize 兜底
+                    result["column_names"] = _fix_col_n_fallback(
+                        column_hints, result["column_names"]
+                    )
+
                 # 确保字段存在
                 result.setdefault("column_descriptions", {})
                 result.setdefault("table_description", "")
@@ -308,6 +313,40 @@ def _fix_semantic_mismatches(cn_cols: list, en_cols: list) -> list:
                 new_parts.append(num)
         if new_parts:
             fixed[i] = '_'.join(new_parts)
+
+    return fixed
+
+
+def _fix_col_n_fallback(cn_cols: list, en_cols: list) -> list:
+    """
+    三次校验：对 LLM 翻译退化为 col_N / col_empty 模式的列名，用 sanitize 兜底。
+    
+    当 LLM 对中文列名翻译失败时，常返回 col_1, col_2 等占位符。
+    此函数检测这些占位符，用 sanitize_column_name 翻译原始中文列名作为兜底。
+    """
+    from services.mysql_writer import sanitize_column_name
+
+    if len(cn_cols) != len(en_cols):
+        return en_cols
+
+    fixed = list(en_cols)
+    fixed_count = 0
+    for i, (cn, en) in enumerate(zip(cn_cols, en_cols)):
+        en_str = str(en).strip()
+        # 检测 col_N 或 col_empty 模式
+        if re.match(r'^col_\d+$', en_str) or en_str == 'col_empty':
+            cn_str = str(cn).strip()
+            if cn_str:
+                sanitized = sanitize_column_name(cn_str)
+                # 只有当 sanitize 结果比 col_N 更好时才替换
+                if sanitized and not re.match(r'^col_\d+$', sanitized) and sanitized != 'col_empty':
+                    fixed[i] = sanitized
+                    fixed_count += 1
+
+    if fixed_count:
+        logger.info(
+            f"    [translate] _fix_col_n_fallback 修正 {fixed_count} 列 col_N 占位符"
+        )
 
     return fixed
 

@@ -183,10 +183,13 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
 
             # 第一次翻译：获取表名（用第一个子表的列名）
             first_subtable = parse_result["subtables"][0]
+            # 给第一个子表也传它自己的局部数据预览（前几行），避免共用原始 Excel 预览
+            # 导致 LLM 缺乏数据上下文而翻译失败
+            first_sub_preview = first_subtable.get("rows", [])[:5] or preview_info.get("preview_data", [])
             translate_result = name_translate.run(
                 file_path=file_path,
                 sheet_name=sheet_name,
-                preview_data=preview_info.get("preview_data", []),
+                preview_data=first_sub_preview,
                 column_hints=first_subtable["columns"],
                 llm_client=llm_client,
                 preview_rows=config["parse"].get("translate_preview_rows", 5),
