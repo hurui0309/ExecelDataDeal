@@ -180,6 +180,11 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
 
         sub_data = [list(row) for row in data[d_start:min(d_end, len(data))]]
         sub_hborder = row_has_hborder[d_start:min(d_end, len(data))] if row_has_hborder else None
+
+        # 合并续行：指标名/单位因排版换行被拆成多行，合并后消除整行NULL
+        from services.table_layout import merge_continuation_rows
+        merge_continuation_rows(sub_data, sub_hborder)
+
         _merge_indicator_column(sub_data, 0, sub_hborder)
         _ffill_indicator_column(sub_data, 0, sub_hborder)
 
@@ -242,28 +247,27 @@ def _detect_vertical_subtables(data: list, rows_info: list | None) -> list:
     if rows_info:
         raw_border_splits = detect_vertical_splits_by_border(rows_info, header_end)
         # 过滤：分割点后面必须符合子表分隔模式
-        # 模式1: 后面有空行（真正的子表分隔）
-        # 模式2: 后面直接是标题行+表头行（无空行分隔的子表）
         for s in raw_border_splits:
-            has_subtable_after = False
-            for j in range(s + 1, min(s + 6, len(data))):
-                if is_empty_row(data[j]):
-                    has_subtable_after = True
-                    break
-                non_empty = [v for v in data[j] if v is not None and str(v).strip() != ""]
-                if len(non_empty) == 1:
-                    # 单列行 → 可能是标题行，检查后面是否有表头行
-                    k = j + 1
-                    while k < min(s + 6, len(data)) and is_empty_row(data[k]):
-                        k += 1
-                    if k < len(data) and is_header_like_row(data[k]):
-                        has_subtable_after = True
-                        break
-            if has_subtable_after:
+            has_valid_subtable = _verify_split_has_subtable(data, s, header_end)
+            if has_valid_subtable:
                 split_rows_by_border.append(s)
 
     # ── Step 4: 内容检测纵向分割点 ──
     split_rows_by_content = _find_splits_by_content(data, header_end)
+
+    # ── Step 4.5: 用内容分割点过滤框线分割点 ──
+    # 框线分割点如果不在任何内容分割点附近（±3行内），说明框线检测到的分割点
+    # 可能是新子表的表头行底部框线（如"项目/1982年"表头行），而非数据结束行
+    # 此时应该丢弃该框线分割点
+    if split_rows_by_content and split_rows_by_border:
+        filtered_border_splits = []
+        for bs in split_rows_by_border:
+            # 检查是否有内容分割点在附近
+            near_content = any(abs(bs - cs) <= 3 for cs in split_rows_by_content)
+            if near_content:
+                filtered_border_splits.append(bs)
+            # 否则丢弃该框线分割点
+        split_rows_by_border = filtered_border_splits
 
     # 合并分割点（去重、合并接近的分割点）
     all_splits = sorted(set(split_rows_by_border + split_rows_by_content))
@@ -283,35 +287,90 @@ def _detect_vertical_subtables(data: list, rows_info: list | None) -> list:
 
 def _find_header_end_by_content(data: list) -> int | None:
     """内容分析找 header_end：找到第一个数据行的前一行。
-    跳过分类行（只有第一列有值的行）和空行。"""
+    跳过分类行（只有第一列有值的行）和空行。
+    但保留表头补充行（如"(百公斤)"这类单列注释行）。"""
     from strategies.strategy_multi_header import _find_data_start_row
     data_start = _find_data_start_row(data)
     if data_start < 0:
         return None
     header_end = data_start - 1
-    # 跳过空行和分类行（只有第一列有值的行）
-    while header_end >= 0:
-        if is_empty_row(data[header_end]):
+    # 跳过空行
+    while header_end >= 0 and is_empty_row(data[header_end]):
+        header_end -= 1
+    if header_end < 0:
+        return None
+    # 检查 header_end 指向的行
+    non_empty = [v for v in data[header_end] if v is not None and str(v).strip() != ""]
+    if len(non_empty) == 1:
+        text = str(non_empty[0]).strip()
+        # 检查是否是表头补充行（如"(百公斤)"、"（万人）"等单列注释行）
+        if _is_header_unit_annotation(text):
+            # 是表头补充行，纳入 header 范围
+            # 继续向上跳过空行和分类行，找到主表头行
+            prev = header_end - 1
+            while prev >= 0:
+                if is_empty_row(data[prev]):
+                    prev -= 1
+                    continue
+                non_empty2 = [v for v in data[prev] if v is not None and str(v).strip() != ""]
+                if len(non_empty2) == 1 and _is_header_unit_annotation(str(non_empty2[0]).strip()):
+                    # 另一个表头补充行
+                    header_end = prev
+                    prev -= 1
+                    continue
+                if len(non_empty2) > 1 or is_header_like_row(data[prev]):
+                    # 找到主表头行
+                    break
+                # 分类行/标题行，跳过
+                prev -= 1
+            # header_end 保持为表头补充行（包含在表头范围中）
+        else:
+            # 不是表头补充行，是分类行或标题行，跳过继续找
             header_end -= 1
-            continue
-        # 检查是否是分类行（只有第一列有值，其余列为空）
-        non_empty = [v for v in data[header_end] if v is not None and str(v).strip() != ""]
-        if len(non_empty) == 1:
-            # 单列行是分类行或标题行，不是表头行，跳过
-            header_end -= 1
-            continue
-        # 检查是否是多列表头行
-        if is_header_like_row(data[header_end]):
-            break
-        # 不是表头行也不是分类行，可能是数据行（不该到这里），跳过
+            while header_end >= 0:
+                if is_empty_row(data[header_end]):
+                    header_end -= 1
+                    continue
+                non_empty2 = [v for v in data[header_end] if v is not None and str(v).strip() != ""]
+                if len(non_empty2) == 1:
+                    header_end -= 1
+                    continue
+                if is_header_like_row(data[header_end]):
+                    break
+                header_end -= 1
+    elif not is_header_like_row(data[header_end]):
         header_end -= 1
     return header_end if header_end >= 0 else None
+
+
+def _is_header_unit_annotation(text: str) -> bool:
+    """判断单列文本是否为表头单位注释行（如"(百公斤)"、"（万人）"等）。
+
+    特征：被括号包裹的单位/量词说明，通常出现在多行表头中，
+    是对上方表头列的补充说明。
+    """
+    from services.table_layout import is_header_supplement_text
+    # 先用通用判断
+    if is_header_supplement_text(text):
+        return True
+    text = text.strip()
+    # 括号包裹的单位注释：如 "(百公斤)"、"（万人）"、"(元)"、"(%)" 等
+    if re.match(r'^[（(].+[）)]$', text):
+        return True
+    # 以括号开头的单位注释（可能只有左括号）：如 "(百公斤"
+    if re.match(r'^[（(].+[）)]?$', text) and len(text) <= 20:
+        return True
+    return False
 
 
 def _find_splits_by_content(data: list, header_end: int) -> list[int]:
     """
     内容分析找纵向分割点：空行 + 标题行 + 表头行模式。
     返回每个分割点的行索引（数据区域中，子表数据结束的位置）。
+    
+    关键：仅当空行后出现"标题行 + 新表头行"时才认为是纵向子表分割。
+    如果空行后只有标题行（如"人口和自然资源(二)"），后面跟着的行不是
+    新的表头行（而是分类行如"五、草原"或数据行），则不算分割点。
     """
     from strategies.strategy_multi_header import _is_footnote_row
     splits = []
@@ -331,13 +390,23 @@ def _find_splits_by_content(data: list, header_end: int) -> list[int]:
 
         non_empty_j = [v for v in data[j] if v is not None and str(v).strip() != ""]
         if len(non_empty_j) == 1:
-            # 单列行 → 可能是标题行，检查后面是否有表头行
+            # 单列行 → 可能是标题行，检查后面是否有**新的表头行**
+            # 跳过空行和脚注行，找到下一个非空行
             k = j + 1
             while k < len(data) and (is_empty_row(data[k]) or _is_footnote_row(data[k])):
                 k += 1
             if k < len(data) and is_header_like_row(data[k]):
+                # 确认是新的表头行（多列有值，像列名行）
+                # 进一步验证：新表头行应该与第一个子表的表头结构相似
+                # （列数相近或列名内容类似）
                 splits.append(i - 1)  # 数据结束在空行前一行
                 i = k + 1
+                continue
+            else:
+                # 单列标题行后面没有新表头行 → 不是纵向子表分割
+                # 可能是共享表头的分组数据（如"一、人口"后直接是数据行）
+                # 或者标题行后是另一个分类行 → 也不是分割点
+                i = j + 1
                 continue
 
         if is_header_like_row(data[j]):
@@ -359,17 +428,22 @@ def _build_regions_from_splits(data: list, header_end: int, split_rows: list,
     """
     regions = []
 
-    # 第一个子表的标题行
+    # 第一个子表的标题行（搜索更远，跳过多列表头行和表头补充行）
     first_title_idx = -1
     for i in range(header_end - 1, -1, -1):
         if is_empty_row(data[i]):
             continue
         non_empty = [v for v in data[i] if v is not None and str(v).strip() != ""]
         if len(non_empty) == 1:
+            # 检查是否是标题行（而非表头补充行如"(百公斤)"）
+            text = str(non_empty[0]).strip()
+            if _is_header_unit_annotation(text):
+                # 是表头补充行，继续向上搜索
+                continue
             first_title_idx = i
             break
-        else:
-            break
+        # 多列行：可能是表头行，继续向上搜索找标题行
+        # （标题行通常在表头行上方）
 
     # 第一个子表：header区域 + 数据到第一个分割点
     header_start = first_title_idx if first_title_idx >= 0 else 0
@@ -429,6 +503,93 @@ def _build_regions_from_splits(data: list, header_end: int, split_rows: list,
     return regions if len(regions) >= 2 else []
 
 
+def _verify_split_has_subtable(data: list, split_row: int, first_header_end: int) -> bool:
+    """
+    验证框线分割点后面是否确实有新的子表。
+
+    有效子表模式：空行 + 标题行（单值）+ 新表头行（多值，像列名行）
+    - 新表头行后面必须紧跟数据行（不是分类行）
+    - 新表头行的列数应与第一个子表的表头列数相近
+
+    无效模式（共享表头的分组数据）：
+    - 标题行后面是分类行（如"五、草原"后面跟数据行，但没有新的列名行）
+    - 标题行后面的"表头行"实际上是数据行
+    """
+    n = len(data)
+    search_limit = min(split_row + 10, n)
+
+    # 从分割点后面开始搜索
+    j = split_row + 1
+
+    # 跳过空行
+    while j < search_limit and is_empty_row(data[j]):
+        j += 1
+    if j >= search_limit:
+        return False
+
+    # 找到第一个非空行
+    non_empty_j = [v for v in data[j] if v is not None and str(v).strip() != ""]
+
+    if len(non_empty_j) == 1:
+        # 单列行 → 可能是标题行，检查后面是否有新表头行
+        title_row = j
+        k = j + 1
+        # 跳过空行
+        while k < search_limit and is_empty_row(data[k]):
+            k += 1
+        if k >= search_limit:
+            return False
+
+        if is_header_like_row(data[k]):
+            # 看起来像表头行，进一步验证
+            # 检查1: 新表头行的列数应与第一个子表表头列数相近
+            first_header_cols = sum(
+                1 for v in data[first_header_end]
+                if v is not None and str(v).strip() != ""
+            )
+            new_header_cols = sum(
+                1 for v in data[k]
+                if v is not None and str(v).strip() != ""
+            )
+            if new_header_cols < max(first_header_cols - 1, 2):
+                return False
+
+            # 检查2: "表头行"后面必须紧跟数据行（不是连续的分类行/单列行）
+            # 如果"表头行"后面紧跟分类行（只有第一列有值），则"表头行"实际上是数据行
+            m = k + 1
+            while m < search_limit and is_empty_row(data[m]):
+                m += 1
+            if m < search_limit:
+                non_empty_m = [v for v in data[m] if v is not None and str(v).strip() != ""]
+                # 如果"表头行"后面紧跟分类行（单列非空），且该分类行后面又是数据行
+                # 则这是一个共享表头的分组数据，不是新子表
+                if len(non_empty_m) == 1:
+                    # 检查该分类行后面是否直接是数据行（没有新的表头行）
+                    p = m + 1
+                    while p < search_limit and is_empty_row(data[p]):
+                        p += 1
+                    if p < search_limit:
+                        # 如果分类行后面是数据行（多列非空且有数字），说明是共享表头
+                        from services.table_layout import _is_data_like_row
+                        if _is_data_like_row(data[p]):
+                            return False
+            return True
+
+    elif is_header_like_row(data[j]):
+        # 直接是表头行（没有标题行）
+        first_header_cols = sum(
+            1 for v in data[first_header_end]
+            if v is not None and str(v).strip() != ""
+        )
+        new_header_cols = sum(
+            1 for v in data[j]
+            if v is not None and str(v).strip() != ""
+        )
+        return new_header_cols >= max(first_header_cols - 1, 2)
+
+    return False
+
+
 def _find_subtable_start_after_split(data: list, start_row: int,
                                      rows_info: list = None) -> tuple:
     """
@@ -462,6 +623,17 @@ def _find_subtable_start_after_split(data: list, start_row: int,
     # 检查是否是标题行（仅第一列有值）
     non_empty = [v for v in data[i] if v is not None and str(v).strip() != ""]
     if len(non_empty) == 1:
+        text = str(non_empty[0]).strip()
+        # 如果是表头补充行（如"(百公斤)"），不是标题行，跳过继续
+        if _is_header_unit_annotation(text):
+            # 继续向上找标题行
+            j = i + 1
+            while j < n and (is_empty_row(data[j]) or _is_footnote_row(data[j])):
+                j += 1
+            if j < n and is_header_like_row(data[j]):
+                header_end = _find_header_end_for_subtable(data, j, n, header_end_by_border)
+                return -1, header_end
+            return -1, -1
         # 可能是标题行，找后面的表头行
         j = i + 1
         while j < n and (is_empty_row(data[j]) or _is_footnote_row(data[j])):
@@ -489,11 +661,24 @@ def _find_header_end_for_subtable(data: list, header_start_row: int,
     为子表找 header_end：结合框线信号和内容分析。
 
     优先使用框线信号（如果可用且合理），否则用内容分析（is_header_like_row 向下扩展）。
+    同时包含表头补充行（如"(百公斤)"等括号包裹的单位注释）。
     """
     # 内容分析：从 header_start_row 向下找连续的表头行
     header_end_by_content = header_start_row
     while header_end_by_content + 1 < n and is_header_like_row(data[header_end_by_content + 1]):
         header_end_by_content += 1
+    # 额外包含表头补充行（如"(百公斤)"等括号包裹的单位注释行）
+    next_row = header_end_by_content + 1
+    while next_row < n:
+        if is_empty_row(data[next_row]):
+            next_row += 1
+            continue
+        non_empty = [v for v in data[next_row] if v is not None and str(v).strip() != ""]
+        if len(non_empty) == 1 and _is_header_unit_annotation(str(non_empty[0]).strip()):
+            header_end_by_content = next_row
+            next_row += 1
+            continue
+        break
 
     # 如果没有框线信号，直接用内容分析结果
     if header_end_by_border is None:
@@ -525,7 +710,7 @@ def _find_header_start_with_border(data: list, header_end: int, lower_bound: int
 
     从 header_end 向上逐行检查，遇到空行跳过，
     遇到标题行（单值长文本）停止，其余行纳入表头范围。
-    框线信号的价值在于确定 header_end（调用前已完成），此处不再用于 header_start 判断。
+    但指标列标题行（如"农产品"，只有第一列有值）应该纳入表头范围。
     """
     header_start = header_end
 
@@ -533,8 +718,25 @@ def _find_header_start_with_border(data: list, header_end: int, lower_bound: int
         if is_empty_row(data[i]):
             continue
         non_empty = [v for v in data[i] if v is not None and str(v).strip() != ""]
-        # 标题行：仅1个非空值且非表头行 → 停止
+        # 标题行：仅1个非空值且非表头行
         if len(non_empty) == 1 and not is_header_like_row(data[i]):
+            text = str(non_empty[0]).strip()
+            # 检查是否是指标列标题行（如"农产品"）或表头补充行（如"(百公斤)"）
+            if _is_header_unit_annotation(text):
+                # 表头补充行，纳入表头范围
+                header_start = i
+                continue
+            # 可能是指标列标题行（如"农产品"、"人口和自然资源"等）
+            # 检查该行是否在多列表头行的正上方（即它是表头的一部分）
+            # 向下找下一行非空行
+            next_non_empty = i + 1
+            while next_non_empty <= header_end and is_empty_row(data[next_non_empty]):
+                next_non_empty += 1
+            if next_non_empty <= header_end and (len([v for v in data[next_non_empty] if v is not None and str(v).strip() != ""]) > 1 or is_header_like_row(data[next_non_empty])):
+                # 下一行是多列表头行 → 该行是指标列标题行，纳入表头范围
+                header_start = i
+                continue
+            # 否则是子表标题行，停止
             break
         if len(non_empty) > 1 or is_header_like_row(data[i]):
             header_start = i

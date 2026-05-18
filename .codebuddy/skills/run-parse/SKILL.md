@@ -45,15 +45,25 @@ description: >
 ### Step 2: 拉取最新代码
 
 ```bash
-cd d:/projects/ExecelDataDeal && git pull
+cd d:/projects/ExecelDataDeal
+
+# 确保在开发分支上工作
+git checkout feature_codebuddy_20260508
+
+# 拉取最新代码
+git pull origin feature_codebuddy_20260508
 ```
 
 **冲突处理**：
 - 如果 pull 成功无冲突 → 继续
-- 如果有合并冲突：
+- 如果有合并冲突，按以下步骤处理：
   1. 列出冲突文件：`git diff --name-only --diff-filter=U`
   2. 对每个冲突文件，查看冲突内容：`git diff <file>`
-  3. 解决冲突（优先保留远程改动，除非本地改动明显更合理）
+  3. 根据改动性质决定保留策略：
+     - **仅远程改了该区域**：保留远程改动
+     - **仅本地改了该区域**：保留本地改动
+     - **两边都改了同一行**：保留本地改动，同时手动合并远程新增的内容（不丢失任一方的新增逻辑）
+     - **无法判断或冲突过于复杂**：停止，提示用户手动处理，给出冲突文件列表和冲突内容
   4. `git add <resolved_files>`
   5. `git commit -m "merge: 解决 git pull 冲突"`
   6. 继续 Step 3

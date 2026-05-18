@@ -27,6 +27,9 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# ───── 临时文件 ─────
+tmp/
+
 # ───── 项目运行产物 ─────
 # 日志（含 RotatingFileHandler 切片）
 data_to_db/logs/
@@ -46,6 +49,10 @@ data_to_db/tmp/
 *.db
 *.sqlite
 *.sqlite3
+
+# ───── 报告 ─────
+# review_reports/ 需要推到仓库，不忽略
+# optimize_reports/ 需要推到仓库，不忽略
 
 # ───── IDE / 系统 ─────
 .idea/

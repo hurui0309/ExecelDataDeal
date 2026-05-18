@@ -503,6 +503,150 @@ def ffill_indicator_column(data: list, data_start: int,
                 data[i] = [last_value] + list(row[1:])
 
 
+# ──────────────────────── 续行合并 ────────────────────────
+
+
+def _is_standalone_sparse_row(row, prev_row) -> bool:
+    """判断稀疏行是否为独立行（非续行），如分类标题行、子表标题行等。
+
+    返回 True 表示该行不应被合并到上一行。
+    """
+    non_empty = [(c, str(v).strip()) for c, v in enumerate(row) if v is not None and str(v).strip()]
+    if not non_empty:
+        return True
+
+    first_text = non_empty[0][1]
+
+    # 以中文冒号结尾 → 分类标题行（如"在工业总产值中："）
+    if first_text.endswith("：") or first_text.endswith(":"):
+        return True
+
+    # 分类标题行（如"一、人口"、"二、土地"、"五、草原"等）
+    if is_category_title_text(first_text):
+        return True
+
+    # 子表标题行（如"232个城市主要经济指标(二)"）
+    if re.match(r"^.*[\u4e00-\u9fff].*[\(（][一二三四五六七八九十]+[\)）]", first_text):
+        return True
+
+    # 年份标注行（如"(1982年)"）
+    if re.match(r"^[（(]\d{4}年?[）)]$", first_text):
+        return True
+
+    # 表头行（如"项目"、"单位"）
+    if len(non_empty) >= 2:
+        texts = [t for _, t in non_empty]
+        if all(len(t) <= 4 for t in texts) and not prev_row:
+            return True
+
+    # 脚注行
+    if is_footnote_row(row):
+        return True
+
+    return False
+
+
+def _is_continuation_of_prev(row, prev_row) -> bool:
+    """判断稀疏行是否是上一行的续行。
+
+    条件：
+    1. 稀疏行（1-2个非空单元格，无数值数据）
+    2. 非独立行（非分类标题、子表标题等）
+    3. 稀疏行的每个非空列，上一行同列也应有内容（续行逻辑）
+    4. 稀疏行的非空列数必须少于上一行的非空列数
+       （续行只延续文本，不重复数值；如果两行非空列数相同，说明是独立数据行）
+    """
+    non_empty = [(c, str(v).strip()) for c, v in enumerate(row) if v is not None and str(v).strip()]
+    if len(non_empty) == 0 or len(non_empty) > 2:
+        return False
+
+    # 不含数值数据
+    for _, text in non_empty:
+        cleaned = text.replace(",", "").replace(" ", "")
+        if re.match(r"^-?\d+\.?\d*$", cleaned):
+            return False
+
+    # 不是独立行
+    if _is_standalone_sparse_row(row, prev_row):
+        return False
+
+    # 上一行非空列数必须显著多于当前行（续行只延续部分列的文本，不重复数值）
+    # 阈值：上一行至少比当前行多3个非空列，避免2列表格中误合并独立数据行
+    prev_non_empty = sum(1 for v in prev_row if v is not None and str(v).strip())
+    if prev_non_empty < len(non_empty) + 3:
+        return False
+
+    # 稀疏行的每个非空列，上一行同列也应有内容（续行逻辑）
+    for col, text in non_empty:
+        if col >= len(prev_row):
+            return False
+        prev_val = prev_row[col]
+        if prev_val is None or str(prev_val).strip() == "":
+            return False
+
+    return True
+
+
+def merge_continuation_rows(data: list, row_has_hborder: list | None = None):
+    """合并续行：当一行只有1-2个非空单元格且是上一行的逻辑续行时，合并到上一行。
+
+    典型场景：Excel 中指标名或单位因排版换行被拆成多行，如：
+      Row N:   ['工业总产值(按1 980年不', '亿元', '5,577.5', ...]
+      Row N+1: ['  变价格计算)', '', '', ...]
+    合并后：
+      Row N:   ['工业总产值(按1980年不变价格计算)', '亿元', '5,577.5', ...]
+
+    同时支持单位拆行：
+      Row N:   ['土地面积', '万平方', '960.0', ...]
+      Row N+1: ['', '公里', '', ...]
+    合并后：
+      Row N:   ['土地面积', '万平方公里', '960.0', ...]
+
+    in-place 修改 data 和 row_has_hborder。
+    """
+    if not data or len(data) < 2:
+        return
+
+    i = 0
+    while i < len(data) - 1:
+        curr = data[i]
+        next_row = data[i + 1]
+
+        # 跳过空行
+        if is_empty_row(curr):
+            i += 1
+            continue
+        if is_empty_row(next_row):
+            i += 1
+            continue
+
+        if _is_continuation_of_prev(next_row, curr):
+            # 合并：将 next_row 的非空单元格追加到 curr 的同列
+            non_empty_next = [(c, str(v).strip()) for c, v in enumerate(next_row)
+                              if v is not None and str(v).strip()]
+            for col, text in non_empty_next:
+                curr_val = curr[col] if col < len(curr) else None
+                if curr_val is not None and str(curr_val).strip():
+                    # 合并：去多余空格后拼接
+                    curr_text = str(curr_val).strip()
+                    # 修复数字间空格：如 "1 980" → "1980"
+                    merged = curr_text + text
+                    # 清理数字间空格
+                    merged = re.sub(r"(\d)\s+(?=\d)", r"\1", merged)
+                    data[i][col] = merged
+                else:
+                    data[i][col] = text
+
+            # 删除续行
+            data.pop(i + 1)
+            if row_has_hborder and len(row_has_hborder) > i + 1:
+                row_has_hborder.pop(i + 1)
+
+            # 继续检查下一行是否还是续行（处理3行以上的拆行）
+            continue
+        i += 1
+
+
 # ──────────────────────── 公共预处理 ────────────────────────
 
 
@@ -557,6 +701,11 @@ def preprocess_sheet(file_path: str, sheet_name,
             row_has_hborder.pop()
         trim_end += 1
 
+    # 合并续行（指标名/单位因排版换行被拆成多行）
+    # 注意：必须在 truncate_footnotes 之前执行，因为脚注续行合并后才能被脚注检测正确识别
+    if data:
+        merge_continuation_rows(data, row_has_hborder if row_has_hborder else None)
+
     # 截脚注
     footnote_trim = 0
     if do_truncate_footnotes and data:
@@ -593,6 +742,8 @@ __all__ = [
     "has_numeric_columns",
     # 第一列填充
     "build_hborder_groups", "fill_group", "ffill_indicator_column",
+    # 续行合并
+    "merge_continuation_rows",
     # 预处理一站式
     "preprocess_sheet",
 ]
