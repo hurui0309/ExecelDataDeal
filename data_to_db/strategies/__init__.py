@@ -35,6 +35,7 @@ BUILTIN_STRATEGIES: dict[str, str] = {
     "strategy_multi_header": "strategies.strategy_multi_header",
     "strategy_vertical_subtable": "strategies.strategy_vertical_subtable",
     "strategy_paired_row_bilingual": "strategies.strategy_paired_row_bilingual",
+    "strategy_horizontal_vertical": "strategies.strategy_horizontal_vertical",
 }
 
 

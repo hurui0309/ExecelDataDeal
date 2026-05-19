@@ -27,6 +27,9 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# ───── 临时文件 ─────
+tmp/
+
 # ───── 项目运行产物 ─────
 # 日志（含 RotatingFileHandler 切片）
 data_to_db/logs/

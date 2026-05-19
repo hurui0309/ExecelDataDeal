@@ -67,6 +67,7 @@ def _make_col_info(right_styles, left_styles, n_rows):
         "right_style": rs, "left_style": ls,
         "right_ratio": rr, "left_ratio": lr,
         "right_dash": rs in DASH_STYLES if rs else False,
+        "left_dash":  ls in DASH_STYLES if ls else False,
     }
 
 
@@ -208,6 +209,17 @@ def find_dash_right_cols(cols_info: list, min_ratio: float = 0.3) -> list[int]:
             if ci.get("right_dash") and ci.get("right_ratio", 0) >= min_ratio]
 
 
+def find_dash_left_cols(cols_info: list, min_ratio: float = 0.01) -> list[int]:
+    """Find column indices (0-based) with dash left border at >= min_ratio.
+
+    在"横向+纵向"混合表中，两段之间的纵向分割线常以下一段首列的 left=dashDot
+    形式出现（而非前一段尾列的 right 边框）。min_ratio 设得较低是因为只在每个
+    分页块的最后一行（约 58/2793 ≈ 2%）出现。
+    """
+    return [i for i, ci in enumerate(cols_info)
+            if ci.get("left_dash") and ci.get("left_ratio", 0) >= min_ratio]
+
+
 def detect_header_end_by_border(rows_info: list) -> int | None:
     """
     Detect header end row using border info.
@@ -325,35 +337,29 @@ def detect_vertical_splits_by_border(rows_info: list, header_end: int) -> list[i
     return splits
 
 
-def pre_classify_by_border(file_path: str, sheet_name) -> dict | None:
-    """
-    Pre-classify a sheet based on border signals, before calling LLM Classifier.
+def _classify_by_border_info(rows_info: list, cols_info: list) -> dict | None:
+    """纯逻辑层：根据已解析的 rows_info / cols_info 判断策略。
 
-    Returns:
-        {
-            "strategy": "strategy_vertical_subtable" | "strategy_horizontal_split",
-            "confidence": 0.9,
-            "params": {},
-            "source": "border_preclassify"
+    与 pre_classify_by_border 的区别：不读文件，便于单元测试和复用。
+    """
+    # ── 规则 0: 同时存在纵向点划左线 + 水平实线表头 → 混合表 ──────────────────
+    dash_left_cols = find_dash_left_cols(cols_info, min_ratio=0.01)
+    header_end_candidate = detect_header_end_by_border(rows_info)
+    if dash_left_cols and header_end_candidate is not None:
+        return {
+            "strategy": "strategy_horizontal_vertical",
+            "confidence": 0.95,
+            "params": {"split_col": dash_left_cols[0]},
+            "source": "border_preclassify",
+            "border_detail": (
+                f"left_dash_cols={dash_left_cols}, "
+                f"header_end={header_end_candidate}"
+            ),
         }
-        or None if no clear border signal is found.
 
-    Rules:
-    - Horizontal dash bottom borders in data region → strategy_vertical_subtable
-    - Vertical dash right borders → strategy_horizontal_split
-    - No clear signal → None (fallback to LLM Classifier)
-    """
-    border_info = read_border_info(file_path, sheet_name)
-    if not border_info:
-        return None
-
-    rows_info = border_info.get("rows", [])
-    cols_info = border_info.get("cols", [])
-
-    # Check for horizontal dash borders (vertical subtable separators)
+    # ── 规则 1: 横向点划底线 → 纵向多子表 ──────────────────────────────────────
     # Only count dashes in the "data region" — skip the first few rows (likely header)
     # A dash row is meaningful if it appears after at least 2 non-dash rows
-    dash_bottom_count = 0
     non_dash_streak = 0
     meaningful_dash_rows = []
     for i, ri in enumerate(rows_info):
@@ -369,24 +375,46 @@ def pre_classify_by_border(file_path: str, sheet_name) -> dict | None:
     if len(meaningful_dash_rows) >= 1:
         return {
             "strategy": "strategy_vertical_subtable",
-            "confidence": 0.9,
-            "params": {},
+            "confidence": 0.85,
+            "params": {"border_dash_rows": meaningful_dash_rows},
             "source": "border_preclassify",
-            "border_detail": f"horizontal_dash_rows={meaningful_dash_rows}",
         }
 
-    # Check for vertical dash right borders (horizontal split columns)
+    # ── 规则 2: 纵向点划右线 → 横向分区 ────────────────────────────────────────
     dash_right_cols = find_dash_right_cols(cols_info, min_ratio=0.3)
     if dash_right_cols:
         return {
             "strategy": "strategy_horizontal_split",
-            "confidence": 0.9,
-            "params": {"split_col_index": dash_right_cols[0]},
+            "confidence": 0.85,
+            "params": {"border_split_cols": dash_right_cols},
             "source": "border_preclassify",
-            "border_detail": f"vertical_dash_cols={dash_right_cols}",
         }
 
     return None
+
+
+def pre_classify_by_border(file_path: str, sheet_name) -> dict | None:
+    """
+    Pre-classify a sheet based on border signals, before calling LLM Classifier.
+
+    Returns:
+        {
+            "strategy": "strategy_vertical_subtable" | "strategy_horizontal_split"
+                      | "strategy_horizontal_vertical",
+            "confidence": float,
+            "params": {},
+            "source": "border_preclassify"
+        }
+        or None if no clear border signal is found.
+    """
+    border_info = read_border_info(file_path, sheet_name)
+    if not border_info:
+        return None
+
+    rows_info = border_info.get("rows", [])
+    cols_info = border_info.get("cols", [])
+    return _classify_by_border_info(rows_info, cols_info)
+
 
 
 def detect_horizontal_split_cols(cols_info: list, rows_info: list) -> list[int]:
