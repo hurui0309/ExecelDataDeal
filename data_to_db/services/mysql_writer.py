@@ -1,5 +1,6 @@
 """Service: mysql_writer — 建表 + 批量写入 + 自动扩宽超长字段"""
 
+from __future__ import annotations
 import os
 import re
 import logging
@@ -31,6 +32,8 @@ def sanitize_column_name(name: str) -> str:
     s = str(name).strip()
     if not s:
         return "col_empty"
+    # 预处理：将 ％/% 替换为语义等价的 pct，避免被正则替换为 _ 后丢失语义
+    s = re.sub(r"[％%]", "pct", s)
     s = re.sub(r"[^\w\u4e00-\u9fff]", "_", s)
     s = re.sub(r"_+", "_", s)
     s = s.strip("_")

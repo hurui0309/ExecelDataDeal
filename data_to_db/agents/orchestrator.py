@@ -1,5 +1,6 @@
 """Orchestrator Agent — 编排者：扫描、分发、协调、汇总"""
 
+from __future__ import annotations
 import os
 import re
 import time

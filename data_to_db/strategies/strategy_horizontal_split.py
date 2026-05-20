@@ -1,5 +1,7 @@
 """策略: strategy_horizontal_split — 横向分区（左右并排多个表，空列分隔）"""
 
+from __future__ import annotations
+
 from services.excel_utils import is_empty_row, is_xls_file
 from services.excel_reader import read_sheet
 

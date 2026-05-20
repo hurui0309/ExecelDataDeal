@@ -1,5 +1,6 @@
 """Excel 数据清洗入仓 — Agent 驱动 主入口"""
 
+from __future__ import annotations
 import os
 import sys
 import logging

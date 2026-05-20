@@ -1,4 +1,5 @@
 """Service: excel_reader — 统一 Excel 读取（含合并单元格填充、可选框线检测）"""
+from __future__ import annotations
 
 import copy
 import logging

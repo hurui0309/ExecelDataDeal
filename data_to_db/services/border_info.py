@@ -7,6 +7,8 @@ Border info is a HIGH-PRIORITY structural signal:
 - Solid borders everywhere → just formatting, skip structural meaning
 """
 
+from __future__ import annotations
+
 import openpyxl
 from collections import Counter
 from services.excel_utils import is_xls_file

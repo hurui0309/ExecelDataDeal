@@ -1,5 +1,7 @@
 """Excel 解析公共工具函数"""
 
+from __future__ import annotations
+
 import re
 
 # ──────────────────────── 边框样式常量 ────────────────────────

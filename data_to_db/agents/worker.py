@@ -1,5 +1,7 @@
 """Worker Agent — 纯执行：接收决策结果 → 翻译 → 解析 → 写库"""
 
+from __future__ import annotations
+
 import os
 import re
 import json
@@ -249,10 +251,13 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
         else:
             # 非子表策略：先翻译，再用翻译后的列名解析
             t_translate = time.time()
+            cn_columns = parse_result.get("columns", [])
+            # 首次翻译也传 column_hints，确保 _fix_numeric_mismatches 等校验函数能执行
             translate_result = name_translate.run(
                 file_path=file_path,
                 sheet_name=sheet_name,
                 preview_data=preview_info.get("preview_data", []),
+                column_hints=cn_columns if cn_columns else None,
                 llm_client=llm_client,
                 preview_rows=config["parse"].get("translate_preview_rows", 5),
             )

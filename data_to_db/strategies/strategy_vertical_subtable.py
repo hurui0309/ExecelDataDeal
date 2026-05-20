@@ -6,6 +6,7 @@
 - 开头连续多行实线 → 仅格式，忽略结构意义
 """
 
+from __future__ import annotations
 import re
 from services.excel_utils import (
     is_empty_row, is_xls_file, is_header_like_row, rename_id_col,

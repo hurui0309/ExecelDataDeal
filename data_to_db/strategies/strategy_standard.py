@@ -4,6 +4,7 @@
 xls/xlsx/biff8 多路径回退能力。
 """
 
+from __future__ import annotations
 from services.excel_reader import read_sheet
 from services.excel_utils import is_empty_row
 from services.table_layout import clean_cell as _clean_cell, is_footnote_row as _is_footnote_row

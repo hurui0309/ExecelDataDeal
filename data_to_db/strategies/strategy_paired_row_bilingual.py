@@ -7,11 +7,13 @@
 
 典型场景：《中国统计年鉴》与香港特别行政区统计刊物中使用的指标对照表
   Row4: "1,8,12" | "建筑业" | "建造业"           ← 主行
-  Row5:          |          | "Construction"      ← 续行（只有英文翻译）
+  Row5:          |          |   "Construction"      ← 续行（只有英文翻译）
 
 输出列: [对应表号, 内地名词, 香港名词, 香港名词_续]
 输出行: "1,8,12" | "建筑业" | "建造业" | "Construction"
 """
+
+from __future__ import annotations
 
 import os
 from services.excel_utils import (

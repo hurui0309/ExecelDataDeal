@@ -1,4 +1,5 @@
 """Classifier Agent — 纯决策：看预览 → 判断策略 → 输出决策 JSON"""
+from __future__ import annotations
 
 import time
 import logging

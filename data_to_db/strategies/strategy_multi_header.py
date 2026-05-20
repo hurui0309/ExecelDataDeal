@@ -8,6 +8,7 @@ R1 重构后：通用工具已迁到 services.table_layout，本模块只保留
 旧的 ``from strategies.strategy_multi_header import _xxx`` 写法继续可用。
 """
 
+from __future__ import annotations
 import re
 
 from services.excel_utils import (
@@ -673,15 +674,84 @@ def _is_merged_cell_value(data: list, row_idx: int, col_idx: int,
 
 def _merge_indicator_column(data: list, data_start: int, row_has_hborder: list = None):
     """
-    对数据区的分类行做处理：与原表保持一致，不删除任何行。
-    
-    对于第一列有文本、其余列全空的行（如"一、农垦系统"）：
-    - 如果下一行第一列为空，将分类文本前缀拼接到下一行第一列
-    - 不删除任何行，保留原表完整结构
+    对数据区的分类行做处理。
+
+    两类合并：
+    1. 续行上拼：指标名被拆成两行时，第二行（仅第一列有文本、其余列全NULL）
+       应拼接到上一行第一列末尾，并将当前行置空。
+       典型：Row47 "三、农村农副产品"(有数据) + Row48 "商品率"(全NULL) → 合并
+    2. 前缀下拼：分类行（如"一、农垦系统"）下一行第一列为空时，做前缀拼接。
     """
     if data_start >= len(data):
         return
 
+    # ── Pass 1: 续行上拼 ──
+    # 当稀疏行（仅第一列有文本、其余全NULL）紧邻数据行或另一个稀疏行时，
+    # 将其文本拼到上一行第一列末尾，并将当前行置空。
+    i = data_start
+    while i < len(data):
+        row = data[i]
+        if is_empty_row(row):
+            i += 1
+            continue
+
+        first_cell = row[0] if len(row) > 0 else None
+        first_text = _normalize_cell_text(first_cell)
+
+        # 判断是否为稀疏行：第一列有文本，其余列全为空/None
+        rest_empty = all(
+            v is None or (isinstance(v, str) and v.strip() == "")
+            for v in row[1:]
+        )
+
+        if first_text is None or not rest_empty:
+            i += 1
+            continue  # 不是稀疏行
+
+        stripped_text = first_text.strip()
+
+        # 分类标题行（一、二、开头）不往上拼——它们是新分节标记
+        if _is_category_title_text(stripped_text):
+            i += 1
+            continue
+
+        # 情况A：紧邻的上一行(i-1)是数据行 → 拼接到上一行
+        if i - 1 >= data_start and not is_empty_row(data[i - 1]):
+            prev_row = data[i - 1]
+            prev_rest_has_data = any(
+                v is not None and not (isinstance(v, str) and v.strip() == "")
+                for v in prev_row[1:]
+            )
+            if prev_rest_has_data:
+                prev_first = prev_row[0] if len(prev_row) > 0 else None
+                if prev_first is not None:
+                    data[i - 1][0] = str(prev_first).rstrip() + stripped_text
+                else:
+                    data[i - 1][0] = stripped_text
+                data[i] = [None] * len(row)
+                i += 1
+                continue
+
+        # 情况B：前一个非空行也是稀疏行（连续分类行拼合）
+        # 如 "一、平均每一农村劳动" + "力生产量"
+        prev_idx = i - 1
+        while prev_idx >= data_start and is_empty_row(data[prev_idx]):
+            prev_idx -= 1
+        if prev_idx >= data_start:
+            prev_row = data[prev_idx]
+            prev_first = prev_row[0] if len(prev_row) > 0 else None
+            prev_first_text = _normalize_cell_text(prev_first)
+            prev_rest_empty = all(
+                v is None or (isinstance(v, str) and v.strip() == "")
+                for v in prev_row[1:]
+            )
+            if prev_first_text is not None and prev_rest_empty:
+                data[prev_idx][0] = str(prev_first).rstrip() + stripped_text
+                data[i] = [None] * len(row)
+
+        i += 1
+
+    # ── Pass 2: 原有前缀下拼逻辑 ──
     for i in range(data_start, len(data)):
         row = data[i]
         if is_empty_row(row):

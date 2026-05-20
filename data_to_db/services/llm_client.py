@@ -1,5 +1,7 @@
 """Service: llm_client — 统一大模型调用封装"""
 
+from __future__ import annotations
+
 import json
 import re
 import time

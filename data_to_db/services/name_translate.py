@@ -1,4 +1,5 @@
 """Service: name_translate — 调用大模型翻译中文表名/列名为英文"""
+from __future__ import annotations
 
 import logging
 import re

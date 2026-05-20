@@ -1,4 +1,5 @@
 """策略: strategy_simple_header — 简单单行表头（指定表头行，后续为数据）"""
+from __future__ import annotations
 
 import re
 from services.excel_utils import (

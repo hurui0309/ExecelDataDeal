@@ -1,5 +1,6 @@
 """Service: excel_preview — 读取 Excel 元信息 + 前 N 行预览数据"""
 
+from __future__ import annotations
 import os
 import struct
 import logging
