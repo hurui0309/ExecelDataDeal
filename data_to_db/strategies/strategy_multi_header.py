@@ -68,6 +68,11 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
     header_end = params.get("header_end")
     data_start = params.get("data_start")
 
+    # 临时调试日志
+    import logging as _logging
+    _tmp_logger = _logging.getLogger("datadeal")
+    _tmp_logger.info(f"    [strategy_multi_header] params={params}")
+
     # 如果提供了 data_start，推导 header_end
     if data_start is not None and data_start > 0 and header_end is None:
         header_end = data_start - 1
@@ -114,6 +119,22 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
         return {"columns": [], "rows": [], "original_row_count": 0}
 
     # 自动检测表头范围（优先使用 LLM 给出的行号 → 框线信号 → 内容分析）
+    # 验证 Classifier 提供的参数质量：先用 Classifier 参数试合并，如果结果太差则回退自动检测
+    classifier_params_provided = (header_start is not None and header_end is not None)
+    if classifier_params_provided:
+        # 快速验证：用 Classifier 参数试合并
+        trial_columns = _merge_multi_row_header(data, header_start, header_end)
+        trial_bad = sum(1 for c in trial_columns if c.startswith("col_") or c == "col_empty")
+        trial_total = len(trial_columns)
+        # 如果超过40%的列是 col_empty/col_N，Classifier 参数可能不准确
+        if trial_total > 0 and trial_bad / trial_total > 0.4:
+            _tmp_logger.info(
+                f"    [strategy_multi_header] Classifier参数质量差 "
+                f"({trial_bad}/{trial_total} 列为col_empty/col_N)，回退自动检测"
+            )
+            header_start = None
+            header_end = None
+
     if header_start is None or header_end is None:
         if params:
             header_start = params.get("header_start")
@@ -140,6 +161,35 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
     while header_end > header_start and _is_category_header_row(data, header_end, n_cols_check):
         header_end -= 1
 
+    # 向上扩展 header 范围：检查 header_start 上方是否有遗漏的部分表头行
+    # 典型场景：多行表头中"单"行在上方、"位"行在下方，两者应合并为"单位"；
+    # 或"1988年为"行在上方、"1987年％"行在下方，应合并为"1988年为1987年pct"
+    if header_start > 0:
+        n_cols_for_expand = max(len(r) for r in data[:header_end + 1]) if header_end >= 0 else 0
+        for hs in range(header_start - 1, -1, -1):
+            row = data[hs]
+            if is_empty_row(row):
+                continue
+            # 跳过标题行（所有非空值相同的行，如"农村经济效益(一)"）
+            if is_title_row(row):
+                break
+            # 跳过分类标题行（仅首列有值的行，如"一、农垦系统"）
+            if _is_category_header_row(data, hs, n_cols_for_expand):
+                break
+            # 检查该行是否有非空单元格
+            non_empty_count = sum(1 for v in row if v is not None and str(v).strip())
+            if non_empty_count == 0:
+                continue
+            # 检查是否含有数字数据（数据行不应纳入header范围）
+            if _row_has_numeric_data(row):
+                break
+            # 该行不是标题/分类/数据行，且含非空单元格 → 可能是部分表头行
+            # 如 [NULL, "单", NULL, ...] 或 [NULL, NULL, ..., "1988年为"]
+            _tmp_logger.info(
+                f"    [strategy_multi_header] 向上扩展header范围: header_start {header_start} → {hs}"
+            )
+            header_start = hs
+
     # 合并多行表头
     columns = _merge_multi_row_header(data, header_start, header_end)
 
@@ -159,6 +209,54 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
             columns = make_unique_columns(columns)
             columns = [rename_id_col(c) for c in columns]
         header_range_uncertain = True
+
+    # P5: header范围有效性检查 — P4修正后如果列名大部分为col_N/col_empty，
+    # 说明header范围内全是分类标题行或空行，需要向上搜索实际header行。
+    # 典型场景：Classifier将header_start指向分类标题行（如"一、平均每一农村劳动"），
+    # P4将header_end回退后，header范围内只剩分类标题行，无法提取有效列名。
+    bad_col_count = sum(1 for c in columns if c.startswith("col_") or c == "col_empty")
+    total_col_count = len(columns) if columns else 0
+    if total_col_count > 0 and bad_col_count / total_col_count > 0.5 and header_start > 0:
+        # 向上搜索实际header行：从header_start-1向上查找，
+        # 找到第一个非分类标题行、含多列非空值的行
+        n_cols_for_check = max(len(r) for r in data[:header_start + 1]) if header_start > 0 else 0
+        for hs in range(header_start - 1, -1, -1):
+            row = data[hs] if hs < len(data) else []
+            if is_empty_row(row):
+                continue
+            # 跳过分类标题行（仅首列有值的行）
+            if _is_category_header_row(data, hs, n_cols_for_check if n_cols_for_check > 0 else max(len(r) for r in data)):
+                continue
+            # 跳过标题行（所有非空值相同的行，如"农村经济效益(一)"）
+            if is_title_row(row):
+                continue
+            # 检查是否为实际header行：有多列非空值
+            non_empty_count = sum(1 for v in row if v is not None and str(v).strip())
+            if non_empty_count >= 2:
+                # 找到实际header行，重新设定header范围
+                _tmp_logger.info(
+                    f"    [strategy_multi_header] P5修正: header范围({header_start}-{header_end})"
+                    f" 列名无效(col_N占比{bad_col_count}/{total_col_count}),"
+                    f" 向上搜索到实际header行{hs}"
+                )
+                header_start = hs
+                header_end = hs  # 先设为单行header
+                # 向下检查是否有多行表头
+                for he in range(hs + 1, min(hs + 5, len(data))):
+                    he_row = data[he]
+                    if is_empty_row(he_row):
+                        continue
+                    if _is_category_header_row(data, he, max(len(r) for r in data[hs:he + 1])):
+                        break  # 分类标题行是数据区的开始，不是表头
+                    if is_header_like_row(he_row):
+                        header_end = he
+                    else:
+                        break
+                columns = _merge_multi_row_header(data, header_start, header_end)
+                columns = make_unique_columns(columns)
+                columns = [rename_id_col(c) for c in columns]
+                header_range_uncertain = False  # P5已修正，不需要LLM校验
+                break
 
     # LLM 辅助表头范围校验：当框线检测和内容分析都不可靠时，
     # 让 LLM 综合框线+内容判断 header_end 是否正确
@@ -189,6 +287,10 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
     if column_names and len(column_names) == len(columns):
         columns = column_names
 
+    # 将"X年为Y年pct"模式的列名直接转为英文 "pct_X_of_Y"
+    # 避免传递给 name_translate 时 LLM 丢失"X年为"前缀
+    columns = [_convert_pct_year_col(c) for c in columns]
+
     # 合并层级指标列（如"人口与就业→人口(万人)→总人口"）
     # 用自动检测的 data_start 校验 LLM/框线 给的值，避免 LLM 偏大导致首行数据丢失
     actual_data_start = header_end + 1
@@ -197,6 +299,14 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
         # 自动检测的 data_start 更早，说明 LLM/框线给偏了
         # 同步修正 header_end 并重新合并表头
         header_end = auto_data_start - 1
+        # 同时从新的 header_end 向上重新检测 header_start
+        # 因为 Classifier 偏移时通常 header_start 也会偏
+        auto_header_start = _find_header_start_from_end(data, header_end)
+        if auto_header_start is not None and auto_header_start < header_start:
+            _tmp_logger.info(
+                f"    [strategy_multi_header] 校正 header_start: {header_start} → {auto_header_start}"
+            )
+            header_start = auto_header_start
         actual_data_start = auto_data_start
         columns = _merge_multi_row_header(data, header_start, header_end)
         from services.mysql_writer import make_unique_columns
@@ -206,8 +316,13 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
             columns = column_names
     elif auto_data_start >= 0 and auto_data_start > actual_data_start:
         # 自动检测的 data_start 更晚，说明 header_end+1 到 auto_data_start 之间
-        # 存在分类标题行（如"一、平均每一农村劳动力生产量"），应跳过
-        actual_data_start = auto_data_start
+        # 存在分类标题行（如"一、农垦系统"），这些行应保留在数据区，
+        # 由 _merge_indicator_column 处理（做前缀拼接或保留为独立行）
+        # 不跳过分类行，保持 actual_data_start = header_end + 1
+        _tmp_logger.info(
+            f"    [strategy_multi_header] auto_data_start({auto_data_start}) > actual_data_start({actual_data_start}),"
+            f" 保留分类行在数据区"
+        )
 
     # 纵向子表检测：如果数据区中间存在空行+新标题+新表头的模式，
     # 则拆分为多个子表（覆盖 Classifier 未选 vertical_subtable 的场景）
@@ -266,6 +381,20 @@ def _is_category_header_row(data: list, row_idx: int, n_cols: int) -> bool:
         if val is not None and str(val).strip():
             return False
     return True
+
+
+def _convert_pct_year_col(col_name: str) -> str:
+    """
+    将"X年为Y年pct"模式的列名直接转为英文 "pct_X_of_Y"。
+
+    典型场景：多行表头合并后产生 "1988年为1987年pct"，
+    语义为"1988年值相当于1987年的百分比"。
+    直接转为英文格式，避免 name_translate LLM 丢失"X年为"前缀。
+    """
+    m = re.match(r'^(\d{4})年为(\d{4})年pct$', col_name)
+    if m:
+        return f"pct_{m.group(1)}_of_{m.group(2)}"
+    return col_name
 
 
 def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> list:
@@ -349,7 +478,8 @@ def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> l
             # 单行值也做纯中文清洗：去掉中文标点后判断是否为纯中文
             raw = parts[0]
             raw_no_space = raw.replace(" ", "")
-            raw_clean = re.sub(r'[：:、，,。.（(）)%％\-—]', '', raw_no_space)
+            raw_clean = re.sub(r'[：:、，,。.（(）)\-—]', '', raw_no_space)
+            raw_clean = re.sub(r'[％%]', 'pct', raw_clean)
             if re.match(r'^[\u4e00-\u9fff]+$', raw_clean) and 2 <= len(raw_clean) <= 12:
                 merged_headers.append(sanitize_column_name(raw_clean))
             else:
@@ -358,11 +488,12 @@ def _merge_multi_row_header(data: list, header_start: int, header_end: int) -> l
             joined = "".join(parts)
             # 去掉空格和中文标点后判断是否为纯中文（多行表头拆行后拼接，如"农作物"+"种植业"+"产值"）
             joined_no_space = joined.replace(" ", "")
-            joined_clean = re.sub(r'[：:、，,。.（(）)%％\-—]', '', joined_no_space)
+            joined_clean = re.sub(r'[：:、，,。.（(）)\-—]', '', joined_no_space)
+            joined_clean = re.sub(r'[％%]', 'pct', joined_clean)
             if re.match(r'^[\u4e00-\u9fff]+$', joined_clean) and 2 <= len(joined_clean) <= 12 and not re.search(r'\d', joined_clean):
                 merged_headers.append(sanitize_column_name(joined_clean))
             else:
-                # 优先直接拼接（如"1988年为"+"1987年％" → "1988年为1987年"）
+                # 优先直接拼接（如"1988年为"+"1987年％" → "1988年为1987年pct"）
                 # 只在直接拼接结果不合法时才用下划线连接
                 direct = sanitize_column_name(joined)
                 if direct and direct != "col_empty" and not direct.startswith("col_"):
@@ -686,7 +817,7 @@ def _merge_header_via_llm(data: list, header_start: int, header_end: int,
 2. 如果某列某行为空，跳过即可
 3. 当同一行多个列的值相同时，需根据上下行确定每个列所属的分组
 4. 列名应语义完整：短词应从上方/左侧的父级标题推断完整含义
-5. 列名中不要包含空格、特殊符号（％ → %, （ → (, ） → )）
+5. 列名中不要包含空格、特殊符号（％ → pct, （ → (, ） → )）
 6. 不要用 col_empty 或 col_N 这类占位符
 {title_section}
 ## 表头区域原始数据（按行）：
@@ -788,6 +919,7 @@ def _fuse_header_results(code_columns: list, llm_result: dict) -> list:
     - LLM confidence >= 0.8 且无异常列名(col_empty/col_N) → 采用 LLM 结果
     - LLM confidence < 0.8 或有异常列名 → 逐列对比，选更合理的
     - LLM 调用失败 → 回退纯代码
+    - 特殊保护：当代码列名含年份且 LLM 列名丢失该年份时，优先代码结果
     """
     if llm_result is None:
         return code_columns
@@ -834,8 +966,10 @@ def _fuse_header_results(code_columns: list, llm_result: dict) -> list:
             # LLM 行，代码不行 → 用 LLM
             fused.append(llm_col)
         else:
-            # 都行 → 偏向 LLM（语义理解更好），但如果 LLM 置信度低则用代码
-            if llm_confidence >= 0.6:
+            # 都行 → 检查年份完整性保护
+            if _code_preserves_more_years(code_col, llm_col):
+                fused.append(code_col)
+            elif llm_confidence >= 0.6:
                 fused.append(llm_col)
             else:
                 fused.append(code_col)
@@ -849,6 +983,21 @@ def _fuse_header_results(code_columns: list, llm_result: dict) -> list:
         f"融合后异常{fused_bad_count}列 (LLM置信度{llm_confidence:.2f})"
     )
     return fused
+
+
+def _code_preserves_more_years(code_col: str, llm_col: str) -> bool:
+    """
+    检查代码列名是否比 LLM 列名保留了更多的年份信息。
+
+    场景：代码合并出 "1988年为1987年pct"，LLM 可能丢失 "1988年为" 前缀
+    变成 "1987_pct" 或 "pct_1987"。当代码列名中的4位年份数量多于 LLM 列名时，
+    优先保留代码结果。
+    """
+    code_years = set(re.findall(r'\d{4}', code_col))
+    llm_years = set(re.findall(r'\d{4}', llm_col))
+    if code_years and len(code_years) > len(llm_years):
+        return True
+    return False
 
 
 # ──────────────────────── 纵向子表拆分 ────────────────────────
