@@ -8,7 +8,7 @@ import threading
 
 import openpyxl
 from services.excel_utils import (
-    is_xls_file, DASH_STYLES, SOLID_STYLES,
+    is_xls_file, is_csv_file, DASH_STYLES, SOLID_STYLES,
     BORDER_SOLID_XLRD, BORDER_DASH_XLRD,
 )
 
@@ -88,7 +88,9 @@ def read_sheet(file_path: str, sheet_name, read_border: bool = False):
             data, row_has_hborder = cached
             return copy.deepcopy(data), list(row_has_hborder)
 
-    if is_xls_file(file_path):
+    if is_csv_file(file_path):
+        result = _read_csv(file_path)
+    elif is_xls_file(file_path):
         result = _read_xls(file_path, sheet_name, read_border)
     else:
         result = _read_xlsx(file_path, sheet_name, read_border)
@@ -226,5 +228,29 @@ def _read_xls_via_biff8(file_path: str, sheet_name):
 
     sheet_data = sheets_data[sheet_index]
     return _sheet_dict_to_rows(sheet_data)
+
+
+def _read_csv(file_path: str):
+    """读取 CSV 文件全部数据（无合并单元格，无边框信息）
+    
+    列数不一致处理：
+      - 行列数超出 header：抛出 CSVColumnMismatchError，需人工修正
+      - 行列数少于 header：用 None 右侧补齐（与 Excel 空单元格行为一致）
+    """
+    from services.excel_preview import _read_csv_all, CSVColumnMismatchError
+    try:
+        rows, _, _ = _read_csv_all(file_path)
+    except CSVColumnMismatchError:
+        raise  # 列数不一致，向上抛出让 orchestrator 写入 error_message
+    except Exception as e:
+        logger.error(f"CSV 读取失败: {file_path} — {e}")
+        return [], []
+    
+    if not rows:
+        return [], []
+    
+    # CSV 没有边框信息
+    row_has_hborder = [False] * len(rows)
+    return rows, row_has_hborder
 
     

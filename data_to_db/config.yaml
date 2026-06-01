@@ -1,10 +1,10 @@
 # ===== 数据库配置 =====
 database:
-  host: "localhost"
+  host: "192.168.31.239"
   port: 3306
   user: "root"
   password: "123456"
-  database: "ods_data"
+  database: "food_security"
   charset: "utf8mb4"
 
 # ===== 大模型 API 配置 =====
@@ -23,7 +23,7 @@ scan:
   # 数据根目录
   data_dir: "../sample_files"
   # 支持的文件扩展名
-  extensions: [".xlsx", ".xls"]
+  extensions: [".xlsx", ".xls", ".csv"]
   # 跳过的文件名前缀（如 Excel 临时文件）
   skip_prefixes: ["~$"]
   # 跳过的目录名

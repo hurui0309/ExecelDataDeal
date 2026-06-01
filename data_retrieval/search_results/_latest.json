@@ -1,0 +1,1757 @@
+[
+  {
+    "rank": 1,
+    "score": 0.95,
+    "file_name": "省、区、市平均每亩耕地农作物种植业产值(一).xlsx",
+    "sheet_name": "1-2",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1985（excel）\\05 农村经济效益\\省、区、市平均每亩耕地农作物种植业产值(一).xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,经济,统计",
+    "table_description": "该表记录了1983年和1984年全国各省、自治区、直辖市平均每亩耕地的农作物种植业产值，包括粮食作物产值、经济作物产值及其他农作物产值，用于分析不同地区农业经济效益的差异。",
+    "matched_fields": [
+      {
+        "name": "1983年",
+        "description": "1983年该地区平均每亩耕地的农作物种植业产值",
+        "data_type": "number",
+        "unit": "元/亩"
+      },
+      {
+        "name": "1984年",
+        "description": "1984年该地区平均每亩耕地的农作物种植业产值",
+        "data_type": "number",
+        "unit": "元/亩"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区平均每亩耕地的粮食作物产值",
+        "data_type": "number",
+        "unit": "元/亩"
+      },
+      {
+        "name": "1984年",
+        "description": "1984年该地区平均每亩耕地的粮食作物产值",
+        "data_type": "number",
+        "unit": "元/亩"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区平均每亩耕地的经济作物产值",
+        "data_type": "number",
+        "unit": "元/亩"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "统计单位的行政区划名称，表示数据所属的地理区域",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区平均每亩耕地的农作物种植业产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "131.59",
+          "191.55",
+          "124.58",
+          "114.66",
+          "67.55"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区平均每亩耕地的农作物种植业产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "148.63",
+          "213.56",
+          "167.65",
+          "122.37",
+          "81.23"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区平均每亩耕地的粮食作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "91.80",
+          "126.75",
+          "79.52",
+          "69.37",
+          "50.43"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区平均每亩耕地的粮食作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "98.35",
+          "139.58",
+          "94.83",
+          "64.62",
+          "55.56"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区平均每亩耕地的经济作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "23.82",
+          "4.73",
+          "11.92",
+          "34.88",
+          "10.81"
+        ]
+      },
+      {
+        "column_index": 7,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区平均每亩耕地的经济作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "30.66",
+          "8.38",
+          "30.39",
+          "43.09",
+          "15.99"
+        ]
+      },
+      {
+        "column_index": 10,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区平均每亩耕地的其他农作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "15.97",
+          "60.07",
+          "33.14",
+          "10.41",
+          "6.31"
+        ]
+      },
+      {
+        "column_index": 11,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区平均每亩耕地的其他农作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "元/亩",
+        "sample_values": [
+          "19.62",
+          "65.60",
+          "42.43",
+          "14.66",
+          "9.68"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表直接提供了分地区、分作物种类（粮食作物、经济作物等）的单位面积产值（单产数据），完全符合用户对‘分作物种类、分地区的单产数据’的需求。"
+  },
+  {
+    "rank": 2,
+    "score": 0.9,
+    "file_name": "7-27_各地区棉花和麻类作物单位面积产量.xlsx",
+    "sheet_name": "1",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴2007（excel）\\7 主要农产品种(养)面积与产量\\7-27_各地区棉花和麻类作物单位面积产量.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,作物产量,农村经济",
+    "table_description": "该表记录了2005年和2006年各地区棉花和麻类作物的单位面积产量，按地区分类统计，数据来源于《中国农村统计年鉴2007》。表格展示了全国各省、自治区、直辖市在棉花和麻类作物（包括黄红麻）方面的单位面积产量情况，用于分析不同地区农作物的生产效率。",
+    "matched_fields": [
+      {
+        "name": "2005年",
+        "description": "2005年该地区麻类作物单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "2006年",
+        "description": "2006年该地区麻类作物单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "地区",
+        "description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "2005年",
+        "description": "2005年该地区棉花单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "2006年",
+        "description": "2006年该地区棉花单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区棉花单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "1128.9",
+          "1149.4",
+          "1364.5",
+          "1006.2",
+          "1056"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区棉花单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "1247.2",
+          "1066.2",
+          "1378.9",
+          "1007.9",
+          "1079.5"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区麻类作物单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "3300.7",
+          "",
+          "",
+          "3316",
+          "760"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区麻类作物单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "3148.2",
+          "",
+          "",
+          "3682.5",
+          "1450"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区黄红麻单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "2670.1",
+          "",
+          "",
+          "2324.2",
+          ""
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区黄红麻单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "2783.4",
+          "",
+          "",
+          "2077.5",
+          ""
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类（棉花、麻类）的单位面积产量数据，符合用户对‘分作物种类、分地区的单产数据’的需求，但作物种类范围较窄。"
+  },
+  {
+    "rank": 3,
+    "score": 0.85,
+    "file_name": "7-28_各地区糖料作物单位面积产量.xlsx",
+    "sheet_name": "1",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴2007（excel）\\7 主要农产品种(养)面积与产量\\7-28_各地区糖料作物单位面积产量.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,统计,作物产量",
+    "table_description": "该表记录了2005年和2006年全国各地区糖料作物的单位面积产量，按糖料作物类型（糖料合计、甘蔗、甜菜）分类统计，数据来源于《中国农村统计年鉴2007》。",
+    "matched_fields": [
+      {
+        "name": "2005年",
+        "description": "2005年该地区糖料作物合计的单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "2006年",
+        "description": "2006年该地区糖料作物合计的单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "地区",
+        "description": "统计单位面积产量的行政区域名称",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "2005年",
+        "description": "2005年该地区甘蔗的单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      },
+      {
+        "name": "2006年",
+        "description": "2006年该地区甘蔗的单位面积产量",
+        "data_type": "number",
+        "unit": "千克／公顷"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "统计单位面积产量的行政区域名称",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区糖料作物合计的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "60419",
+          "40704",
+          "32473",
+          "36331",
+          "29962"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区糖料作物合计的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "61911",
+          "40780",
+          "32023",
+          "35715",
+          "37070"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区甘蔗的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "63970",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区甘蔗的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "66737",
+          "51278",
+          "54146",
+          "",
+          ""
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "2005年",
+        "semantic_description": "2005年该地区甜菜的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "37523",
+          "",
+          "40704",
+          "36331",
+          "29962"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "2006年",
+        "semantic_description": "2006年该地区甜菜的单位面积产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千克／公顷",
+        "sample_values": [
+          "36746",
+          "",
+          "40780",
+          "35715",
+          "37070"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类（甘蔗、甜菜）的单位面积产量数据，符合用户需求，但作物种类仅限于糖料作物，范围较窄。"
+  },
+  {
+    "rank": 4,
+    "score": 0.75,
+    "file_name": "5-16_各地区分项种植业产值.xlsx",
+    "sheet_name": "1-3",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1997（excel）\\5 农林牧渔业增加值、总产值和农村非农行业总产值\\5-16_各地区分项种植业产值.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,经济,统计",
+    "table_description": "该表记录了1996年中国各地区分项种植业产值，按地区分类统计，涵盖了粮食、油料、棉花、麻类、糖类、烟叶、药材类、蔬菜瓜类、茶果等主要农作物的产值数据，数据以当年价格计算，单位为亿元，用于分析各地种植业经济结构和产出情况。",
+    "matched_fields": [
+      {
+        "name": "粮食",
+        "description": "该地区当年粮食作物的总产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "地区",
+        "description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "#粮食      主产品",
+        "description": "粮食作物中主产品的产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "#谷物",
+        "description": "谷物类作物的产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "#豆类",
+        "description": "豆类作物的产值",
+        "data_type": "number",
+        "unit": "亿元"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "粮食",
+        "semantic_description": "该地区当年粮食作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "7385.97",
+          "39.7",
+          "41.4",
+          "428.3",
+          "156.5"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "#粮食      主产品",
+        "semantic_description": "粮食作物中主产品的产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "6478.55",
+          "38.63",
+          "38.61",
+          "378.97",
+          "127.82"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "#谷物",
+        "semantic_description": "谷物类作物的产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "6919.02",
+          "37.43",
+          "37.85",
+          "405.09",
+          "148.19"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "#豆类",
+        "semantic_description": "豆类作物的产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "6063.31",
+          "0.81",
+          "2.18",
+          "21.65",
+          "13.45"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "#薯类",
+        "semantic_description": "薯类作物的产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "415.23",
+          "0.18",
+          "0.49",
+          "25.82",
+          "14.89"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "油料",
+        "semantic_description": "油料作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "593.5",
+          "0.90",
+          "1.10",
+          "38.35",
+          "20.53"
+        ]
+      },
+      {
+        "column_index": 7,
+        "column_name": "棉花",
+        "semantic_description": "棉花作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "610.4",
+          "0.27",
+          "1.02",
+          "42.86",
+          "11.37"
+        ]
+      },
+      {
+        "column_index": 8,
+        "column_name": "麻类",
+        "semantic_description": "麻类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "27.2",
+          "…",
+          "0.04",
+          "0.34",
+          "0.04"
+        ]
+      },
+      {
+        "column_index": 9,
+        "column_name": "糖类",
+        "semantic_description": "糖类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "242.3",
+          "…",
+          "…",
+          "0.25",
+          "2.56"
+        ]
+      },
+      {
+        "column_index": 10,
+        "column_name": "烟叶",
+        "semantic_description": "烟叶作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "229.1",
+          "…",
+          "0.03",
+          "0.83",
+          "1.08"
+        ]
+      },
+      {
+        "column_index": 11,
+        "column_name": "药材类",
+        "semantic_description": "药材类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "65.9",
+          "0.08",
+          "…",
+          "2.59",
+          "0.30"
+        ]
+      },
+      {
+        "column_index": 12,
+        "column_name": "蔬菜瓜类",
+        "semantic_description": "蔬菜瓜类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "2272.65",
+          "34.71",
+          "30.14",
+          "165.63",
+          "28.37"
+        ]
+      },
+      {
+        "column_index": 13,
+        "column_name": "茶    果",
+        "semantic_description": "茶叶和水果类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "826.20",
+          "7.39",
+          "3.63",
+          "72.93",
+          "17.55"
+        ]
+      },
+      {
+        "column_index": 14,
+        "column_name": "其  它",
+        "semantic_description": "其他未分类作物的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "271.97",
+          "3.86",
+          "1.81",
+          "2.08",
+          "0.11"
+        ]
+      },
+      {
+        "column_index": 15,
+        "column_name": "其它作物    副产品",
+        "semantic_description": "其他作物副产品的总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "18.39",
+          "0.44",
+          "0.29",
+          "0.12",
+          "0.11"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类的种植业产值数据，虽然不是直接的单产数据，但可以间接用于分析单产趋势，与用户需求较为相关。"
+  },
+  {
+    "rank": 5,
+    "score": 0.65,
+    "file_name": "省、区、市农作物播种面积_(一).xlsx",
+    "sheet_name": "1-2",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1985（excel）\\03 主要农产品产量、工业产品产量和主要农产品商品量\\省、区、市农作物播种面积_(一).xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,统计,种植面积",
+    "table_description": "该表记录了1980年至1984年间，中国各省、自治区、直辖市的农作物总播种面积、粮食作物播种面积、经济作物播种面积及其他农作物播种面积的统计数据。数据按地区和年份分类，单位为万亩，用于分析农业种植结构和变化趋势。",
+    "matched_fields": [
+      {
+        "name": "1980年",
+        "description": "1980年该地区的农作物总播种面积",
+        "data_type": "number",
+        "unit": "万亩"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区的农作物总播种面积",
+        "data_type": "number",
+        "unit": "万亩"
+      },
+      {
+        "name": "1984年",
+        "description": "1984年该地区的农作物总播种面积",
+        "data_type": "number",
+        "unit": "万亩"
+      },
+      {
+        "name": "1980年",
+        "description": "1980年该地区的粮食作物播种面积",
+        "data_type": "number",
+        "unit": "万亩"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区的粮食作物播种面积",
+        "data_type": "number",
+        "unit": "万亩"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "统计单位的行政区划名称",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "1980年",
+        "semantic_description": "1980年该地区的农作物总播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "219569.3",
+          "986.1",
+          "1003.5",
+          "13520.9",
+          "6399.9"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的农作物总播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "215990.2",
+          "957.2",
+          "911.5",
+          "18010.8",
+          "6191.2"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的农作物总播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "216332.0",
+          "950.0",
+          "935.2",
+          "13061.9",
+          "6247.3"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "1980年",
+        "semantic_description": "1980年该地区的粮食作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "175851.4",
+          "823.0",
+          "845.3",
+          "11230.8",
+          "5263.1"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的粮食作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "171070.8",
+          "794.4",
+          "756.8",
+          "10354.8",
+          "5034.3"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的粮食作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "169325.9",
+          "784.7",
+          "730.0",
+          "9983.9",
+          "4992.9"
+        ]
+      },
+      {
+        "column_index": 8,
+        "column_name": "1980年",
+        "semantic_description": "1980年该地区的经济作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "23881.5",
+          "49.0",
+          "64.8",
+          "1610.8",
+          "737.6"
+        ]
+      },
+      {
+        "column_index": 9,
+        "column_name": "1988年",
+        "semantic_description": "1988年该地区的经济作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "26641.3",
+          "41.3",
+          "80.5",
+          "2030.4",
+          "793.2"
+        ]
+      },
+      {
+        "column_index": 10,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的经济作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "28931.6",
+          "41.1",
+          "124.9",
+          "2439.6",
+          "873.6"
+        ]
+      },
+      {
+        "column_index": 11,
+        "column_name": "1980年",
+        "semantic_description": "1980年该地区的其他农作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "19836.4",
+          "114.1",
+          "93.4",
+          "679.3",
+          "399.2"
+        ]
+      },
+      {
+        "column_index": 12,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的其他农作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "18278.1",
+          "121.5",
+          "74.2",
+          "625.6",
+          "363.7"
+        ]
+      },
+      {
+        "column_index": 13,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的其他农作物播种面积",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "万亩",
+        "sample_values": [
+          "18074.5",
+          "124.2",
+          "80.3",
+          "638.4",
+          "380.8"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类的播种面积数据，虽然不涉及单产，但可作为单产分析的辅助数据，与用户需求有一定相关性。"
+  },
+  {
+    "rank": 6,
+    "score": 0.6,
+    "file_name": "7-8_各地区油料播种面积.xlsx",
+    "sheet_name": "1",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴2007（excel）\\7 主要农产品种(养)面积与产量\\7-8_各地区油料播种面积.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,统计,种植",
+    "table_description": "该表记录了2005年和2006年全国各地区油料作物的播种面积，包括油料合计、花生和油菜籽的播种面积，按地区分类统计，数据来源于《中国农村统计年鉴2007》。",
+    "matched_fields": [
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总播种面积，包含花生和油菜籽",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总播种面积，包含花生和油菜籽，2006年数据",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "地区",
+        "description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的播种面积，2005年数据",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的播种面积，2006年数据",
+        "data_type": "number",
+        "unit": "千公顷"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总播种面积，包含花生和油菜籽",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "14317.7",
+          "8.6",
+          "5.1",
+          "559",
+          "273.4"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总播种面积，包含花生和油菜籽，2006年数据",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "13736.4",
+          "7.2",
+          "4.6",
+          "537.8",
+          "225.1"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的播种面积，2005年数据",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "4662.3",
+          "8.3",
+          "2.3",
+          "438.8",
+          "14.6"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的播种面积，2006年数据",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "4570.5",
+          "7",
+          "2.1",
+          "425.1",
+          "12.6"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的播种面积，2005年数据",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "7278.4",
+          "",
+          "",
+          "35.4",
+          "10.1"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的播种面积，2006年数据",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "6887.7",
+          "",
+          "",
+          "31.1",
+          "7.5"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类（油料、花生、油菜籽）的播种面积数据，与用户需求有一定相关性，但缺乏单产信息。"
+  },
+  {
+    "rank": 7,
+    "score": 0.55,
+    "file_name": "7-19_各地区油料产量.xlsx",
+    "sheet_name": "1",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴2007（excel）\\7 主要农产品种(养)面积与产量\\7-19_各地区油料产量.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,经济,统计",
+    "table_description": "该表记录了2005年和2006年全国各地区油料作物的产量，包括油料合计、花生和油菜籽的产量。数据按地区分类统计，反映了中国农村油料作物的生产情况，可用于农业产量分析和区域经济研究。",
+    "matched_fields": [
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总产量，包含花生和油菜籽等",
+        "data_type": "number",
+        "unit": "吨"
+      },
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总产量，包含花生和油菜籽等",
+        "data_type": "number",
+        "unit": "吨"
+      },
+      {
+        "name": "地区",
+        "description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的产量",
+        "data_type": "number",
+        "unit": "吨"
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的产量",
+        "data_type": "number",
+        "unit": "吨"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总产量，包含花生和油菜籽等",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "30771350",
+          "24923",
+          "12943",
+          "1527270",
+          "212620"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总产量，包含花生和油菜籽等",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "30593912",
+          "21656",
+          "12011",
+          "1502957",
+          "191852"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "14341532",
+          "24605",
+          "7962",
+          "1403277",
+          "28583"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "14666086",
+          "21442",
+          "7250",
+          "1370480",
+          "24989"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "13052255",
+          "",
+          "",
+          "46700",
+          "7676"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的产量",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "吨",
+        "sample_values": [
+          "12649312",
+          "",
+          "",
+          "41118",
+          "7016"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类的油料作物产量数据，但未提供单位面积产量，无法直接满足用户对单产数据的需求。"
+  },
+  {
+    "rank": 8,
+    "score": 0.5,
+    "file_name": "7-8_各地区油料播种面积.xlsx",
+    "sheet_name": "1-2",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴2017（excel）\\7 主要农产品种植(养殖)面积与产量\\7-8_各地区油料播种面积.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,种植,统计",
+    "table_description": "该表记录了2015年和2016年全国各地区油料作物的播种面积数据，包括油料作物的总体播种面积以及其中花生和油菜籽的播种面积。数据来源于《中国农村统计年鉴2017》，用于分析全国及各地区油料作物种植情况的年度变化。",
+    "matched_fields": [
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总播种面积，包含花生和油菜籽",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "油料合计",
+        "description": "该地区油料作物的总播种面积，包含花生和油菜籽（2016年数据）",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的播种面积（2015年数据）",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "#花生",
+        "description": "该地区花生的播种面积（2016年数据）",
+        "data_type": "number",
+        "unit": "千公顷"
+      },
+      {
+        "name": "#油菜籽",
+        "description": "该地区油菜籽的播种面积（2015年数据）",
+        "data_type": "number",
+        "unit": "千公顷"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地 区",
+        "semantic_description": "统计单位的行政区域名称，表示数据所属的地理范围",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总播种面积，包含花生和油菜籽",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "14034.6",
+          "2.1",
+          "1.3",
+          "461.6",
+          "121.2"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "油料合计",
+        "semantic_description": "该地区油料作物的总播种面积，包含花生和油菜籽（2016年数据）",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "14138.4",
+          "2.2",
+          "6.7",
+          "468.3",
+          "114.7"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的播种面积（2015年数据）",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "4615.7",
+          "1.8",
+          "1.0",
+          "342.9",
+          "6.6"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "#花生",
+        "semantic_description": "该地区花生的播种面积（2016年数据）",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "4727.5",
+          "1.5",
+          "1.7",
+          "342.3",
+          "6.4"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的播种面积（2015年数据）",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "7534.4",
+          null,
+          "0.0",
+          "17.6",
+          "4.3"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "#油菜籽",
+        "semantic_description": "该地区油菜籽的播种面积（2016年数据）",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "千公顷",
+        "sample_values": [
+          "7331.1",
+          null,
+          "0.1",
+          "18.7",
+          "4.7"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分作物种类的油料作物播种面积数据，与用户需求有一定相关性，但缺乏单产信息。"
+  },
+  {
+    "rank": 9,
+    "score": 0.45,
+    "file_name": "省、区、市现价粮食作物和经济作物产值.xlsx",
+    "sheet_name": "1-2",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1985（excel）\\02 农村社会总产值\\省、区、市现价粮食作物和经济作物产值.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,经济",
+    "table_description": "该表记录了1983年和1984年全国各省、自治区、直辖市的农作物种植业产值，按粮食作物和经济作物分类统计。数据反映了当时中国农村农业经济结构和产值分布情况，可用于分析农业产值变化趋势及区域差异。",
+    "matched_fields": [
+      {
+        "name": "1983年",
+        "description": "1983年该地区的农作物种植业总产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "1984年",
+        "description": "1984年该地区的农作物种植业总产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区的粮食作物产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "1984年",
+        "description": "1984年该地区的粮食作物产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "1983年",
+        "description": "1983年该地区的经济作物产值",
+        "data_type": "number",
+        "unit": "亿元"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "统计单位的行政区划名称，表示数据所属的地理区域",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的农作物种植业总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "1941.40",
+          "12.15",
+          "8.57",
+          "113.00",
+          "39.23"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的农作物种植业总产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "2181.65",
+          "13.51",
+          "11.42",
+          "121.67",
+          "46.94"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的粮食作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "1354.41",
+          "8.04",
+          "5.47",
+          "68.36",
+          "29.29"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的粮食作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "1443.61",
+          "8.83",
+          "6.46",
+          "64.25",
+          "32.11"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "1983年",
+        "semantic_description": "1983年该地区的经济作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "351.44",
+          "0.30",
+          "0.82",
+          "34.37",
+          "6.28"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "1984年",
+        "semantic_description": "1984年该地区的经济作物产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "450.03",
+          "0.53",
+          "2.07",
+          "42.84",
+          "9.24"
+        ]
+      }
+    ],
+    "match_reason": "category | LLM: 该表提供了分地区、分作物种类（粮食作物、经济作物）的产值数据，但未提供单位面积产值，与用户需求相关性较低。"
+  },
+  {
+    "rank": 10,
+    "score": 0.4,
+    "file_name": "省、区、市分部门农业净产值.xlsx",
+    "sheet_name": "1",
+    "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1985（excel）\\02 农村社会总产值\\省、区、市分部门农业净产值.xlsx",
+    "sheet_index": 0,
+    "table_category": "农业,经济",
+    "table_description": "该表记录了1985年中国各省、自治区、直辖市分部门的农业净产值，包括农作物种植业、林业、牧业、副业和渔业的净产值。数据用于反映当年各地农业经济结构和各农业部门的经济贡献。",
+    "matched_fields": [
+      {
+        "name": "农作物",
+        "description": "该地区农作物种植业的净产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "地区",
+        "description": "统计农业净产值的行政区划单位",
+        "data_type": "string",
+        "unit": null
+      },
+      {
+        "name": "合  计",
+        "description": "该地区农业净产值的总和，涵盖所有农业部门",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "林业",
+        "description": "该地区林业的净产值",
+        "data_type": "number",
+        "unit": "亿元"
+      },
+      {
+        "name": "牧业",
+        "description": "该地区牧业的净产值",
+        "data_type": "number",
+        "unit": "亿元"
+      }
+    ],
+    "all_fields": [
+      {
+        "column_index": 0,
+        "column_name": "地区",
+        "semantic_description": "统计农业净产值的行政区划单位",
+        "data_type": "string",
+        "is_dimension": true,
+        "unit": null,
+        "sample_values": [
+          "全国总计",
+          "北京",
+          "天津",
+          "河北",
+          "山西"
+        ]
+      },
+      {
+        "column_index": 1,
+        "column_name": "合  计",
+        "semantic_description": "该地区农业净产值的总和，涵盖所有农业部门",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "2,227.04",
+          "14.55",
+          "11.09",
+          "108.76",
+          "44.90"
+        ]
+      },
+      {
+        "column_index": 2,
+        "column_name": "农作物",
+        "semantic_description": "该地区农作物种植业的净产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "1,604.39",
+          "9.93",
+          "8.27",
+          "87.17",
+          "32.84"
+        ]
+      },
+      {
+        "column_index": 3,
+        "column_name": "林业",
+        "semantic_description": "该地区林业的净产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "123.68",
+          "0.69",
+          "0.17",
+          "3.88",
+          "4.73"
+        ]
+      },
+      {
+        "column_index": 4,
+        "column_name": "牧业",
+        "semantic_description": "该地区牧业的净产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "313.66",
+          "2.96",
+          "1.87",
+          "14.10",
+          "5.53"
+        ]
+      },
+      {
+        "column_index": 5,
+        "column_name": "副业",
+        "semantic_description": "该地区副业的净产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "127.35",
+          "0.82",
+          "0.44",
+          "3.15",
+          "1.78"
+        ]
+      },
+      {
+        "column_index": 6,
+        "column_name": "渔业",
+        "semantic_description": "该地区渔业的净产值",
+        "data_type": "number",
+        "is_dimension": false,
+        "unit": "亿元",
+        "sample_values": [
+          "57.96",
+          "0.15",
+          "0.34",
+          "0.46",
+          "0.02"
+        ]
+      }
+    ],
+    "match_reason": "keyword | LLM: 该表提供了分地区、分农业部门的净产值数据，但未涉及具体作物种类或单位面积数据，与用户需求相关性较低。"
+  }
+]

@@ -62,3 +62,11 @@ data_to_db/tmp/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ───── 原始数据目录（不入库）─────
+待清洗数据/
+sample_files/
+待清洗数据.zip
+粮食安全大数据采集进展.xlsx
+项目汇报.html
+项目介绍_入职指南.md

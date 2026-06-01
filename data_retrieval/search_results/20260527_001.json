@@ -1,0 +1,2435 @@
+{
+  "query": "单产数据 单位面积产量 分作物 分地区",
+  "timestamp": "2026-05-27T19:30:58.143541",
+  "took_ms": 49019,
+  "total": 10,
+  "results": [
+    {
+      "rank": 1,
+      "score": 0.95,
+      "file_name": "各地区主要粮食作物单位面积产量(一).xlsx",
+      "sheet_name": "1-2",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1993（excel）\\全国和省、自治区、直辖市农村经济\\主要农产品和乡村企业主要工业产品生产情况\\各地区主要粮食作物单位面积产量(一).xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,经济,统计",
+      "table_description": "该表记录了1991年和1992年全国各省、自治区、直辖市主要粮食作物的单位面积产量，包括粮食、稻谷、小麦、玉米、谷子、高粱、薯类和大豆等作物。数据来源于《中国农村统计年鉴1993》，用于反映不同地区主要粮食作物的生产效率和农业发展状况。",
+      "matched_fields": [
+        {
+          "name": "1991年",
+          "description": "1991年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1991年",
+          "description": "1991年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1991年",
+          "description": "1991年该地区小麦的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "统计单位，表示数据所属的行政区域",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3876",
+            "5790",
+            "4335",
+            "3330",
+            "2325"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4004",
+            "5907",
+            "4454",
+            "3299",
+            "2685"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "5640",
+            "6525",
+            "5730",
+            "5925",
+            "5895"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "5803",
+            "6674",
+            "7023",
+            "6397",
+            "6279"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3100",
+            "5655",
+            "4245",
+            "3555",
+            "3030"
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3331",
+            "5805",
+            "4354",
+            "3611",
+            "2654"
+          ]
+        },
+        {
+          "column_index": 7,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4578",
+            "6255",
+            "5250",
+            "4410",
+            "3675"
+          ]
+        },
+        {
+          "column_index": 8,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4533",
+            "6284",
+            "5036",
+            "4199",
+            "4671"
+          ]
+        },
+        {
+          "column_index": 11,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1650",
+            "1830",
+            "1980",
+            "1845",
+            "1200"
+          ]
+        },
+        {
+          "column_index": 12,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1776",
+            "1926",
+            "1892",
+            "1758",
+            "2086"
+          ]
+        },
+        {
+          "column_index": 13,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3555",
+            "3720",
+            "3525",
+            "2880",
+            "2805"
+          ]
+        },
+        {
+          "column_index": 14,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3596",
+            "3515",
+            "3707",
+            "2762",
+            "3918"
+          ]
+        },
+        {
+          "column_index": 15,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2992",
+            "4005",
+            "4725",
+            "3075",
+            "1620"
+          ]
+        },
+        {
+          "column_index": 16,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3141",
+            "4535",
+            "4883",
+            "2915",
+            "2432"
+          ]
+        },
+        {
+          "column_index": 17,
+          "column_name": "1991年",
+          "semantic_description": "1991年该地区大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1379",
+            "2220",
+            "1725",
+            "1320",
+            "675"
+          ]
+        },
+        {
+          "column_index": 18,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1427",
+            "2636",
+            "1561",
+            "1050",
+            "964"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表明确提供了1991年和1992年全国各省、自治区、直辖市主要粮食作物的单位面积产量，分作物（如稻谷、小麦、玉米等）和分地区统计，完全符合用户对'单产数据 单位面积产量 分作物 分地区'的需求。"
+    },
+    {
+      "rank": 2,
+      "score": 0.93,
+      "file_name": "各地区主要经济作物单位面积产量(一).xlsx",
+      "sheet_name": "1-3",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1993（excel）\\全国和省、自治区、直辖市农村经济\\主要农产品和乡村企业主要工业产品生产情况\\各地区主要经济作物单位面积产量(一).xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,经济,统计",
+      "table_description": "该表记录了1991年和1992年全国各省、自治区、直辖市主要经济作物的单位面积产量，包括棉花、油料、花生、油菜籽、芝麻、胡麻籽、向日葵、黄红麻、甘蔗、甜菜、烤烟等作物的产量数据，用于反映各地农业生产效率和经济作物种植情况。",
+      "matched_fields": [
+        {
+          "name": "1991年",
+          "description": "1991年棉花单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年棉花单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1991年",
+          "description": "1991年油料单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年油料单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1991年",
+          "description": "1991年花生单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "统计单位，表示数据所属的行政区域",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "上海",
+            "江苏"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1991年",
+          "semantic_description": "1991年棉花单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "868",
+            "885",
+            "855",
+            "660",
+            "765"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1992年",
+          "semantic_description": "1992年棉花单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "660",
+            "1047",
+            "566",
+            "347",
+            "630"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1991年",
+          "semantic_description": "1991年油料单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1421",
+            "2700",
+            "1740",
+            "1305",
+            "795"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1992年",
+          "semantic_description": "1992年油料单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1428",
+            "2760",
+            "1597",
+            "1207",
+            "918"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1991年",
+          "semantic_description": "1991年花生单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2189",
+            "2835",
+            "2460",
+            "2010",
+            "1230"
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "1992年",
+          "semantic_description": "1992年花生单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2000",
+            "2879",
+            "2365",
+            "1645",
+            "1632"
+          ]
+        },
+        {
+          "column_index": 7,
+          "column_name": "1991年",
+          "semantic_description": "1991年油菜籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1212",
+            "",
+            "",
+            "510",
+            "1005"
+          ]
+        },
+        {
+          "column_index": 8,
+          "column_name": "1992年",
+          "semantic_description": "1992年油菜籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1281",
+            "",
+            "",
+            "589",
+            "953"
+          ]
+        },
+        {
+          "column_index": 11,
+          "column_name": "1991年",
+          "semantic_description": "1991年芝麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "640",
+            "780",
+            "750",
+            "510",
+            "540"
+          ]
+        },
+        {
+          "column_index": 12,
+          "column_name": "1992年",
+          "semantic_description": "1992年芝麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "692",
+            "793",
+            "779",
+            "424",
+            "678"
+          ]
+        },
+        {
+          "column_index": 13,
+          "column_name": "1991年",
+          "semantic_description": "1991年胡麻籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "705",
+            "",
+            "",
+            "285",
+            "675"
+          ]
+        },
+        {
+          "column_index": 14,
+          "column_name": "1992年",
+          "semantic_description": "1992年胡麻籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "746",
+            "",
+            "",
+            "552",
+            "532"
+          ]
+        },
+        {
+          "column_index": 15,
+          "column_name": "1991年",
+          "semantic_description": "1991年向日葵单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1800",
+            "",
+            "",
+            "765",
+            "960"
+          ]
+        },
+        {
+          "column_index": 16,
+          "column_name": "1992年",
+          "semantic_description": "1992年向日葵单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1826",
+            "",
+            "",
+            "1012",
+            "1170"
+          ]
+        },
+        {
+          "column_index": 17,
+          "column_name": "1991年",
+          "semantic_description": "1991年黄红麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1902",
+            "",
+            "2625",
+            "2625",
+            "1095"
+          ]
+        },
+        {
+          "column_index": 18,
+          "column_name": "1992年",
+          "semantic_description": "1992年黄红麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2233",
+            "",
+            "2643",
+            "2643",
+            ""
+          ]
+        },
+        {
+          "column_index": 21,
+          "column_name": "1991年",
+          "semantic_description": "1991年甘蔗单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "43230",
+            "",
+            "",
+            "17955",
+            "25860"
+          ]
+        },
+        {
+          "column_index": 22,
+          "column_name": "1992年",
+          "semantic_description": "1992年甘蔗单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "46217",
+            "",
+            "",
+            "16898",
+            "28966"
+          ]
+        },
+        {
+          "column_index": 23,
+          "column_name": "1991年",
+          "semantic_description": "1991年甜菜单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "58345",
+            "",
+            "",
+            "25860",
+            "25860"
+          ]
+        },
+        {
+          "column_index": 24,
+          "column_name": "1992年",
+          "semantic_description": "1992年甜菜单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "58605",
+            "",
+            "",
+            "28966",
+            "28966"
+          ]
+        },
+        {
+          "column_index": 25,
+          "column_name": "1991年",
+          "semantic_description": "1991年烤烟单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "20791",
+            "",
+            "",
+            "1575",
+            "1395"
+          ]
+        },
+        {
+          "column_index": 26,
+          "column_name": "1992年",
+          "semantic_description": "1992年烤烟单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "22832",
+            "",
+            "",
+            "1479",
+            "1526"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1991年和1992年全国各省、自治区、直辖市主要经济作物的单位面积产量，分作物（如棉花、油料、花生等）和分地区统计，符合用户对'分作物 分地区'的要求，但作物类型为经济作物，与用户可能更关注的粮食作物相比略低。"
+    },
+    {
+      "rank": 3,
+      "score": 0.9,
+      "file_name": "6-25_各地区分品种粮食作物单位面积产量.xlsx",
+      "sheet_name": "1-3",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1994（excel）\\6 主要农作物种植面积和产量\\6-25_各地区分品种粮食作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,统计,作物产量",
+      "table_description": "该表记录了1992年和1993年全国各地区主要粮食作物的单位面积产量，包括粮食、谷物、稻谷、小麦、玉米、谷子、高粱、大豆、薯类等作物，按地区分类统计，数据来源于《中国农村统计年鉴1994》。",
+      "matched_fields": [
+        {
+          "name": "1992年",
+          "description": "1992年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区谷物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该地区谷物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4003.8",
+            "5906.1",
+            "4454.2",
+            "3298.6",
+            "2685.5"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区粮食作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4130.8",
+            "6234.9",
+            "4425.2",
+            "3380.7",
+            "3018.5"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区谷物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4341.7",
+            "5985.7",
+            "4910.9",
+            "3547.6",
+            "2975.6"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区谷物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4557.0",
+            "6361.1",
+            "4997.3",
+            "3690.5",
+            "3399.0"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "5803.1",
+            "6677.2",
+            "7023.2",
+            "6396.5",
+            "6279.1"
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "5854.1",
+            "7018.9",
+            "7644.2",
+            "6835.0",
+            "5750.7"
+          ]
+        },
+        {
+          "column_index": 7,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "3331.2",
+            "5805.1",
+            "4353.9",
+            "3611.2",
+            "2653.7"
+          ]
+        },
+        {
+          "column_index": 8,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "3518.8",
+            "5897.6",
+            "4279.5",
+            "3572.0",
+            "3179.2"
+          ]
+        },
+        {
+          "column_index": 11,
+          "column_name": "地区",
+          "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 12,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4532.7",
+            "6286.4",
+            "5036.4",
+            "4199.0",
+            "4671.5"
+          ]
+        },
+        {
+          "column_index": 13,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4962.9",
+            "6947.8",
+            "5169.5",
+            "4533.8",
+            "5141.0"
+          ]
+        },
+        {
+          "column_index": 14,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1776.3",
+            "2000.0",
+            "1891.9",
+            "1758.4",
+            "2086.4"
+          ]
+        },
+        {
+          "column_index": 15,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "2183.0",
+            "1500.0",
+            "2424.2",
+            "2309.8",
+            "2257.6"
+          ]
+        },
+        {
+          "column_index": 16,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "3596.1",
+            "3529.4",
+            "3706.9",
+            "2762.5",
+            "3918.4"
+          ]
+        },
+        {
+          "column_index": 17,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "4107.2",
+            "2973.0",
+            "4180.3",
+            "2911.7",
+            "4522.6"
+          ]
+        },
+        {
+          "column_index": 21,
+          "column_name": "地区",
+          "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 22,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区豆类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1393.7",
+            "2674.4",
+            "1516.7",
+            "1033.2",
+            "892.1"
+          ]
+        },
+        {
+          "column_index": 23,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区豆类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1575.9",
+            "2456.1",
+            "1715.4",
+            "1306.2",
+            "1190.1"
+          ]
+        },
+        {
+          "column_index": 24,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1427.0",
+            "2674.4",
+            "1561.3",
+            "1049.9",
+            "964.4"
+          ]
+        },
+        {
+          "column_index": 25,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1619.1",
+            "2456.1",
+            "1763.9",
+            "1457.5",
+            "1200.2"
+          ]
+        },
+        {
+          "column_index": 26,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "3140.5",
+            "4545.5",
+            "4883.7",
+            "2915.2",
+            "2432.4"
+          ]
+        },
+        {
+          "column_index": 27,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "3450.1",
+            "4393.9",
+            "5000.0",
+            "3190.2",
+            "2796.5"
+          ]
+        },
+        {
+          "column_index": 28,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区马铃薯的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "2534.5",
+            "4545.5",
+            "4883.7",
+            "2142.9",
+            "2237.0"
+          ]
+        },
+        {
+          "column_index": 29,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区马铃薯的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "2982.9",
+            "4393.9",
+            "5000.0",
+            "1447.4",
+            "2487.4"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1992年和1993年全国各地区主要粮食作物的单位面积产量，分作物（如稻谷、小麦、玉米等）和分地区统计，符合用户对'分作物 分地区'的要求，时间范围稍晚于用户可能关注的1992年，但整体匹配度高。"
+    },
+    {
+      "rank": 4,
+      "score": 0.88,
+      "file_name": "6-25_各地区分品种粮食作物单位面积产量.xlsx",
+      "sheet_name": "1-3",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1995（excel）\\6 主要农产品种植面积及产量\\6-25_各地区分品种粮食作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,统计,产量",
+      "table_description": "该表记录了1993年和1994年全国各地区主要粮食作物（如稻谷、小麦、玉米、谷子、高粱、其他谷物、豆类、薯类等）的单位面积产量。数据按地区分类，反映了不同地区各类粮食作物的单产水平，用于农业产量分析和区域农业比较。",
+      "matched_fields": [
+        {
+          "name": "1993年",
+          "description": "1993年稻谷的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年",
+          "description": "1994年稻谷的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年小麦的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年",
+          "description": "1994年小麦的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年玉米的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "地区名称，表示统计数据的行政区划地域范围",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1993年",
+          "semantic_description": "1993年稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4557.0",
+            "6361.1",
+            "4997.3",
+            "3690.5",
+            "3399.2"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1994年",
+          "semantic_description": "1994年稻谷的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4499.7",
+            "6627.2",
+            "4997.3",
+            "4044.6",
+            "3141.7"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1993年",
+          "semantic_description": "1993年小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "5854.7",
+            "7018.9",
+            "7644.2",
+            "6835.0",
+            "5733.3"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1994年",
+          "semantic_description": "1994年小麦的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "5831.1",
+            "7916.7",
+            "7917.3",
+            "7498.9",
+            "5851.1"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1993年",
+          "semantic_description": "1993年玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3518.8",
+            "5897.6",
+            "4279.6",
+            "3572.0",
+            "3179.3"
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "1994年",
+          "semantic_description": "1994年玉米的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3426.3",
+            "5925.1",
+            "4243.8",
+            "3753.5",
+            "2952.7"
+          ]
+        },
+        {
+          "column_index": 7,
+          "column_name": "1993年",
+          "semantic_description": "1993年谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4963.0",
+            "6947.8",
+            "5169.5",
+            "4533.8",
+            "5141.1"
+          ]
+        },
+        {
+          "column_index": 8,
+          "column_name": "1994年",
+          "semantic_description": "1994年谷子的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4693.4",
+            "7200.0",
+            "5011.3",
+            "5063.7",
+            "4548.5"
+          ]
+        },
+        {
+          "column_index": 11,
+          "column_name": "1993年",
+          "semantic_description": "1993年高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2183.0",
+            "1500.0",
+            "2424.2",
+            "2307.7",
+            "2257.6"
+          ]
+        },
+        {
+          "column_index": 12,
+          "column_name": "1994年",
+          "semantic_description": "1994年高粱的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2210.8",
+            "2148.5",
+            "2215.2",
+            "2444.1",
+            "1938.3"
+          ]
+        },
+        {
+          "column_index": 13,
+          "column_name": "1993年",
+          "semantic_description": "1993年其他谷物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4107.5",
+            "2973.0",
+            "4180.3",
+            "2914.2",
+            "4523.0"
+          ]
+        },
+        {
+          "column_index": 14,
+          "column_name": "1994年",
+          "semantic_description": "1994年其他谷物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4626.5",
+            "4787.5",
+            "4571.0",
+            "3187.8",
+            "4302.4"
+          ]
+        },
+        {
+          "column_index": 17,
+          "column_name": "1993年",
+          "semantic_description": "1993年豆类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1991.1",
+            "2162.2",
+            "3061.2",
+            "948.2",
+            "1257.7"
+          ]
+        },
+        {
+          "column_index": 18,
+          "column_name": "1994年",
+          "semantic_description": "1994年豆类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2232.2",
+            "2628.9",
+            "2554.0",
+            "1182.2",
+            "1257.6"
+          ]
+        },
+        {
+          "column_index": 21,
+          "column_name": "1993年",
+          "semantic_description": "1993年大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1575.9",
+            "2456.1",
+            "1715.4",
+            "1306.3",
+            "1189.2"
+          ]
+        },
+        {
+          "column_index": 22,
+          "column_name": "1994年",
+          "semantic_description": "1994年大豆的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "1645.4",
+            "2829.4",
+            "1859.6",
+            "1478.7",
+            "1035.0"
+          ]
+        },
+        {
+          "column_index": 25,
+          "column_name": "1993年",
+          "semantic_description": "1993年薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3450.1",
+            "3493.9",
+            "5000.0",
+            "3190.2",
+            "2798.2"
+          ]
+        },
+        {
+          "column_index": 26,
+          "column_name": "1994年",
+          "semantic_description": "1994年薯类的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3263.5",
+            "5196.7",
+            "4927.5",
+            "3485.4",
+            "2635.4"
+          ]
+        },
+        {
+          "column_index": 29,
+          "column_name": "1993年",
+          "semantic_description": "1993年马铃薯的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2659.0",
+            "2488.6",
+            "2424.6",
+            "1447.4",
+            "2488.6"
+          ]
+        },
+        {
+          "column_index": 30,
+          "column_name": "1994年",
+          "semantic_description": "1994年马铃薯的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2730.8",
+            "2502.5",
+            "2183.7",
+            "2344.6",
+            "2502.5"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1993年和1994年全国各地区主要粮食作物的单位面积产量，分作物（如稻谷、小麦、玉米等）和分地区统计，符合用户对'分作物 分地区'的要求，时间范围稍晚，但数据结构和内容高度匹配。"
+    },
+    {
+      "rank": 5,
+      "score": 0.85,
+      "file_name": "全国主要农作物单位面积产量.xlsx",
+      "sheet_name": "1",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1993（excel）\\全国和省、自治区、直辖市农村经济\\主要农产品和乡村企业主要工业产品生产情况\\全国主要农作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,经济,统计",
+      "table_description": "该表记录了1985年至1992年间全国主要农作物的单位面积产量，按作物类别分类统计，数据来源于《中国农村统计年鉴1993》。表格涵盖了粮食作物和经济作物的年度产量变化，用于分析农业生产的趋势和效率。",
+      "matched_fields": [
+        {
+          "name": "1985年",
+          "description": "1985年该农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1990年",
+          "description": "1990年该农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1991年",
+          "description": "1991年该农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "项目",
+          "semantic_description": "农作物或作物类别的名称，用于分类统计",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "一、粮食作物",
+            "#夏收粮食",
+            "1．稻谷",
+            "2．小麦",
+            "3．玉米"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1985年",
+          "semantic_description": "1985年该农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3480",
+            "2925",
+            "5250",
+            "2940",
+            "3600"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1990年",
+          "semantic_description": "1990年该农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3930",
+            "3120",
+            "5730",
+            "3195",
+            "4530"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1991年",
+          "semantic_description": "1991年该农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3870",
+            "3060",
+            "5640",
+            "3105",
+            "4575"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1992年",
+          "semantic_description": "1992年该农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4004",
+            "3261",
+            "5803",
+            "3331",
+            "4533"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1991年％",
+          "semantic_description": "1992年产量相对于1991年的百分比变化",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "%",
+          "sample_values": [
+            "103.5",
+            "106.6",
+            "102.9",
+            "107.3",
+            "99.1"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1985年至1992年间全国主要农作物的单位面积产量，按作物类别分类统计，但未明确分地区，因此在'分地区'方面有所欠缺，但'分作物'和'单位面积产量'符合用户需求。"
+    },
+    {
+      "rank": 6,
+      "score": 0.8,
+      "file_name": "6-23_主要农作物单位面积产量.xlsx",
+      "sheet_name": "1",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1994（excel）\\6 主要农作物种植面积和产量\\6-23_主要农作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,统计,农作物,产量",
+      "table_description": "该表记录了1990年至1993年间中国主要农作物的单位面积产量，按作物类别分类统计，数据包括稻谷、小麦、玉米、谷子、高粱、豆类、薯类等主要粮食作物的产量变化情况，以及1993年相对于1992年的产量增长绝对值和百分比。",
+      "matched_fields": [
+        {
+          "name": "1990年",
+          "description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年比1992年增加",
+          "description": "1993年与1992年相比的单位面积产量绝对增长值",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年比1992年增加",
+          "description": "1993年与1992年相比的单位面积产量增长百分比",
+          "data_type": "number",
+          "unit": "%"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "项目",
+          "semantic_description": "农作物类别或子类，用于分类统计",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "一、粮食作物",
+            "(一)谷物",
+            "1．稻谷",
+            "#早稻",
+            "2．小麦"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1990年",
+          "semantic_description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3933",
+            "5726",
+            "3194",
+            "4524",
+            "2008"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1992年",
+          "semantic_description": "1992年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4004",
+            "5803",
+            "3331",
+            "4533",
+            "1776"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1993年",
+          "semantic_description": "1993年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4131",
+            "5854",
+            "3519",
+            "4963",
+            "2183"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1993年比1992年增加",
+          "semantic_description": "1993年与1992年相比的单位面积产量绝对增长值",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "127",
+            "51",
+            "188",
+            "430",
+            "407"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1993年比1992年增加",
+          "semantic_description": "1993年与1992年相比的单位面积产量增长百分比",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "%",
+          "sample_values": [
+            "3.2",
+            "0.9",
+            "5.6",
+            "9.5",
+            "22.9"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1990年至1993年间中国主要农作物的单位面积产量，按作物类别分类统计，但未明确分地区，因此在'分地区'方面有所欠缺，但'分作物'和'单位面积产量'符合用户需求。"
+    },
+    {
+      "rank": 7,
+      "score": 0.78,
+      "file_name": "6-23_主要农作物单位面积产量.xlsx",
+      "sheet_name": "1",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1995（excel）\\6 主要农产品种植面积及产量\\6-23_主要农作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,统计,农作物,产量",
+      "table_description": "该表记录了1990年至1994年间中国主要农作物的单位面积产量，按作物类别分类统计，数据来源于《中国农村统计年鉴1995》。表格展示了粮食作物、谷物、豆类、薯类等主要农作物在不同年份的单位面积产量变化情况，包括绝对数值和同比增长百分比，用于分析农业产量趋势。",
+      "matched_fields": [
+        {
+          "name": "1990年",
+          "description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年",
+          "description": "1994年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年比1993年增加（绝对数）",
+          "description": "1994年与1993年相比的单位面积产量绝对变化值",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年比1993年增加（百分比）",
+          "description": "1994年与1993年相比的单位面积产量相对变化百分比",
+          "data_type": "number",
+          "unit": "%"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "主要农作物类别",
+          "semantic_description": "农作物的分类名称，如粮食作物、谷物、稻谷等",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "一、粮食作物",
+            "(一)谷物",
+            "1．稻谷",
+            "2．小麦",
+            "3．玉米"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1990年",
+          "semantic_description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3933",
+            "",
+            "5726",
+            "3194",
+            "4524"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1993年",
+          "semantic_description": "1993年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4131",
+            "4557",
+            "5848",
+            "3519",
+            "4963"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1994年",
+          "semantic_description": "1994年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4063",
+            "4500",
+            "5831",
+            "3426",
+            "4693"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1994年比1993年增加（绝对数）",
+          "semantic_description": "1994年与1993年相比的单位面积产量绝对变化值",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "-68",
+            "-57",
+            "-17",
+            "-92",
+            "-270"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1994年比1993年增加（百分比）",
+          "semantic_description": "1994年与1993年相比的单位面积产量相对变化百分比",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "%",
+          "sample_values": [
+            "-1.6",
+            "-1.3",
+            "-0.3",
+            "-2.6",
+            "-5.4"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1990年至1994年间中国主要农作物的单位面积产量，按作物类别分类统计，但未明确分地区，因此在'分地区'方面有所欠缺，但'分作物'和'单位面积产量'符合用户需求。"
+    },
+    {
+      "rank": 8,
+      "score": 0.75,
+      "file_name": "6-23_主要农作物单位面积产量.xlsx",
+      "sheet_name": "1",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1996（excel）\\6 农林牧渔业主要产品种植面积及产量\\6-23_主要农作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,统计,农作物,产量",
+      "table_description": "该表记录了1990年至1995年间中国主要农作物的单位面积产量，按作物类别细分，包括粮食作物、油料作物等，并提供了1995年相对于1990年和1994年的产量变化百分比。数据来源于《中国农村统计年鉴1996》，用于分析农作物产量趋势及变化。",
+      "matched_fields": [
+        {
+          "name": "1990年",
+          "description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1994年",
+          "description": "1994年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1995年",
+          "description": "1995年该类农作物的单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "主要农作物类别",
+          "semantic_description": "农作物的分类名称，如粮食作物、谷物、稻谷等",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "一、粮食作物",
+            "(一)谷物",
+            "1．稻谷",
+            "2．小麦",
+            "3．玉米"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1990年",
+          "semantic_description": "1990年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "3933",
+            "",
+            "5726",
+            "3194",
+            "4524"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1994年",
+          "semantic_description": "1994年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4063",
+            "4500",
+            "5831",
+            "3426",
+            "4693"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1995年",
+          "semantic_description": "1995年该类农作物的单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "4240",
+            "4659",
+            "6025",
+            "3541",
+            "4917"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1995年为下列各年％",
+          "semantic_description": "1995年产量相对于1990年的百分比",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "%",
+          "sample_values": [
+            "107.8",
+            "",
+            "105.2",
+            "110.9",
+            "108.7"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1995年为下列各年％",
+          "semantic_description": "1995年产量相对于1994年的百分比",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "%",
+          "sample_values": [
+            "104.3",
+            "103.5",
+            "103.3",
+            "103.4",
+            "104.8"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1990年至1995年间中国主要农作物的单位面积产量，按作物类别细分，但未明确分地区，因此在'分地区'方面有所欠缺，但'分作物'和'单位面积产量'符合用户需求。"
+    },
+    {
+      "rank": 9,
+      "score": 0.7,
+      "file_name": "6-26_各地区油料作物单位面积产量.xlsx",
+      "sheet_name": "1-2",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1994（excel）\\6 主要农作物种植面积和产量\\6-26_各地区油料作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,农作物,产量统计",
+      "table_description": "该表记录了1992年至1993年期间，中国各地区油料作物单位面积产量的统计数据，包括油料合计、花生、油菜籽、芝麻、胡麻籽和向日葵等主要油料作物的产量。数据按地区分类，反映了不同地区在两年间各类油料作物的单位面积产量水平。",
+      "matched_fields": [
+        {
+          "name": "地区",
+          "description": "统计单位面积产量的行政区划名称",
+          "data_type": "string",
+          "unit": null
+        },
+        {
+          "name": "花    生",
+          "description": "1992年该地区花生单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "花    生",
+          "description": "1993年该地区花生单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "油菜籽",
+          "description": "1992年该地区油菜籽单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        },
+        {
+          "name": "油菜籽",
+          "description": "1993年该地区油菜籽单位面积产量",
+          "data_type": "number",
+          "unit": "公斤/公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "统计单位面积产量的行政区划名称",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "油料合计",
+          "semantic_description": "1992年该地区油料作物单位面积总产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1428.4",
+            "2768.4",
+            "1597.2",
+            "1206.9",
+            "917.6"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "油料合计",
+          "semantic_description": "1993年该地区油料作物单位面积总产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1619.0",
+            "3003.5",
+            "1808.0",
+            "1447.5",
+            "1167.2"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "花    生",
+          "semantic_description": "1992年该地区花生单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "2000.5",
+            "2883.5",
+            "2365.2",
+            "1644.6",
+            "1632.5"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "花    生",
+          "semantic_description": "1993年该地区花生单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "2491.9",
+            "3143.0",
+            "2505.2",
+            "2110.3",
+            "1952.9"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "油菜籽",
+          "semantic_description": "1992年该地区油菜籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1280.7",
+            null,
+            null,
+            "588.5",
+            "953.3"
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "油菜籽",
+          "semantic_description": "1993年该地区油菜籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1309.2",
+            null,
+            null,
+            "461.8",
+            "2158.2"
+          ]
+        },
+        {
+          "column_index": 9,
+          "column_name": "地区",
+          "semantic_description": "统计单位面积产量的行政区划名称（续表）",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 10,
+          "column_name": "芝  麻",
+          "semantic_description": "1992年该地区芝麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "691.8",
+            "760.0",
+            "779.4",
+            "423.8",
+            "678.2"
+          ]
+        },
+        {
+          "column_index": 11,
+          "column_name": "芝  麻",
+          "semantic_description": "1993年该地区芝麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "747.1",
+            "734.0",
+            "805.9",
+            "545.6",
+            "816.8"
+          ]
+        },
+        {
+          "column_index": 12,
+          "column_name": "胡麻籽",
+          "semantic_description": "1992年该地区胡麻籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "746.3",
+            null,
+            null,
+            "552.4",
+            "531.8"
+          ]
+        },
+        {
+          "column_index": 13,
+          "column_name": "胡麻籽",
+          "semantic_description": "1993年该地区胡麻籽单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "760.5",
+            null,
+            null,
+            "318.2",
+            "764.3"
+          ]
+        },
+        {
+          "column_index": 14,
+          "column_name": "向日葵",
+          "semantic_description": "1992年该地区向日葵单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1826.1",
+            null,
+            "1307.1",
+            "1012.1",
+            "1170.0"
+          ]
+        },
+        {
+          "column_index": 15,
+          "column_name": "向日葵",
+          "semantic_description": "1993年该地区向日葵单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤/公顷",
+          "sample_values": [
+            "1773.2",
+            null,
+            "1590.7",
+            "654.8",
+            "1357.6"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1992年至1993年期间，中国各地区油料作物单位面积产量，分作物（如油菜籽、花生等）和分地区统计，符合用户对'分作物 分地区'的要求，但作物类型为油料作物，范围较窄。"
+    },
+    {
+      "rank": 10,
+      "score": 0.68,
+      "file_name": "6-27_各地区棉花和麻类作物单位面积产量.xlsx",
+      "sheet_name": "1",
+      "file_path": "../待清洗数据\\中国农村统计年鉴-Excel版（1985-2024年）\\中国农村统计年鉴1994（excel）\\6 主要农作物种植面积和产量\\6-27_各地区棉花和麻类作物单位面积产量.xlsx",
+      "sheet_index": 0,
+      "table_category": "农业,农作物,产量统计",
+      "table_description": "该表记录了1992年至1993年间，中国各地区棉花和麻类作物的单位面积产量，包括棉花、麻类、黄红麻和亚麻等作物的产量数据，按地区分类统计，数据来源于《中国农村统计年鉴1994》。",
+      "matched_fields": [
+        {
+          "name": "地区",
+          "description": "统计单位面积产量的地理区域名称",
+          "data_type": "string",
+          "unit": null
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区棉花单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该地区棉花单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1992年",
+          "description": "1992年该地区麻类作物单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        },
+        {
+          "name": "1993年",
+          "description": "1993年该地区麻类作物单位面积产量",
+          "data_type": "number",
+          "unit": "公斤／公顷"
+        }
+      ],
+      "all_fields": [
+        {
+          "column_index": 0,
+          "column_name": "地区",
+          "semantic_description": "统计单位面积产量的地理区域名称",
+          "data_type": "string",
+          "is_dimension": true,
+          "unit": null,
+          "sample_values": [
+            "全国总计",
+            "北京",
+            "天津",
+            "河北",
+            "山西"
+          ]
+        },
+        {
+          "column_index": 1,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区棉花单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "659.6",
+            "1046.7",
+            "566.1",
+            "346.9",
+            "629.7"
+          ]
+        },
+        {
+          "column_index": 2,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区棉花单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "750.1",
+            "1043.9",
+            "776.0",
+            "370.0",
+            "750.0"
+          ]
+        },
+        {
+          "column_index": 3,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区麻类作物单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2160.0",
+            "",
+            "2613.8",
+            "2392.4",
+            "990.6"
+          ]
+        },
+        {
+          "column_index": 4,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区麻类作物单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2288.3",
+            "",
+            "2841.3",
+            "2349.8",
+            "1663.3"
+          ]
+        },
+        {
+          "column_index": 5,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区黄红麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2232.7",
+            "",
+            "2555.0",
+            "2643.1",
+            ""
+          ]
+        },
+        {
+          "column_index": 6,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区黄红麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2449.0",
+            "",
+            "2822.5",
+            "2618.6",
+            ""
+          ]
+        },
+        {
+          "column_index": 7,
+          "column_name": "1992年",
+          "semantic_description": "1992年该地区亚麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2863.0",
+            "",
+            "",
+            "",
+            "880.0"
+          ]
+        },
+        {
+          "column_index": 8,
+          "column_name": "1993年",
+          "semantic_description": "1993年该地区亚麻单位面积产量",
+          "data_type": "number",
+          "is_dimension": false,
+          "unit": "公斤／公顷",
+          "sample_values": [
+            "2742.5",
+            "",
+            "",
+            "",
+            "3148.8"
+          ]
+        }
+      ],
+      "match_reason": "keyword | LLM: 该表记录了1992年至1993年间，中国各地区棉花和麻类作物的单位面积产量，分作物（如棉花、麻类等）和分地区统计，符合用户对'分作物 分地区'的要求，但作物类型较窄。"
+    }
+  ]
+}

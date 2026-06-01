@@ -1,0 +1,62 @@
+# ===== 数据库配置 =====
+database:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "123456"
+  database: "ods_data"
+  charset: "utf8mb4"
+
+# ===== 大模型 API 配置 =====
+llm:
+  # 模型配置
+  standard:
+    api_base: "http://chat.hzau.edu.cn:3000/v1/"
+    api_key: "sk-dtrQQelwfcectVDL4f485e9801104cD382Ec71Ae62A16042"
+    model: "qwen3-32b"
+  # 生成参数
+  temperature: 0.1
+  max_tokens: 8192                 # 默认 token 上限
+  extract_max_tokens: 16384        # 普通表语义提取 max_tokens
+  wide_table_max_tokens: 4096      # 宽表(>50列)仅提取表级语义，无需大上限
+
+# ===== 文件扫描配置 =====
+scan:
+  # 数据根目录（相对于本配置文件，或绝对路径）
+  data_dir: "../待清洗数据"
+  # 支持的文件扩展名
+  extensions: [".xlsx", ".xls"]
+  # 跳过的文件名前缀
+  skip_prefixes: ["~$"]
+  # 跳过的目录名
+  skip_dirs: []
+
+# ===== 语义提取配置 =====
+extract:
+  # Excel 预览行数
+  preview_rows: 20
+  # 快速跳过规则（无需 LLM）
+  quick_skip_keywords:
+    - "必看说明"
+    - "数据说明"
+    - "使用说明"
+    - "目录"
+    - "前言"
+    - "备注"
+    - "附录"
+    - "凡例"
+  # 有效数据行数下限（总行数少于此值直接跳过）
+  min_data_rows: 3
+  # LLM 调用并发数（≥1，建议 2~4）
+  concurrency: 2
+  # 是否使用快速跳过（跳过后的 sheet 不调用 LLM）
+  enable_quick_skip: true
+  # 是否仅处理尚未提取的文件（增量模式）
+  incremental: true
+
+# ===== 日志配置 =====
+logging:
+  level: "INFO"
+  file: "./logs/phase1_extract_%Y%m%d_%H%M%S.log"
+  max_bytes: 10485760
+  backup_count: 30

@@ -8,7 +8,7 @@ import logging
 import openpyxl
 
 import services.xlrd_patch  # noqa: F401  确保 xlrd 已 patch（幂等）
-from services.excel_utils import is_empty_row, is_xls_file
+from services.excel_utils import is_empty_row, is_xls_file, is_csv_file
 
 logger = logging.getLogger("datadeal")
 
@@ -17,11 +17,18 @@ def list_sheets(file_path: str) -> dict:
     """轻量接口：仅返回 sheet 名列表与文件大小。
 
     返回:
-        {"sheet_names": list[str], "file_size": int, "is_xls": bool, "error": str?}
+        {"sheet_names": list[str], "file_size": int, "is_xls": bool, "is_csv": bool, "error": str?}
 
     相比 run() 不读取任何单元格内容，避免在仅获取 sheet 列表时遍历整张表。
+    CSV 文件被视为单 sheet，sheet 名为文件名（不含扩展名）。
     """
     file_size = os.path.getsize(file_path)
+    
+    # CSV 文件：单 sheet，sheet 名为文件名（不含扩展名）
+    if is_csv_file(file_path):
+        sheet_name = os.path.splitext(os.path.basename(file_path))[0]
+        return {"sheet_names": [sheet_name], "file_size": file_size, "is_xls": False, "is_csv": True}
+    
     is_xls = is_xls_file(file_path)
     if is_xls:
         return _list_sheets_xls(file_path, file_size)
@@ -80,6 +87,11 @@ def run(file_path: str, sheet_index: int = 0, preview_rows: int = 20) -> dict:
         }
     """
     file_size = os.path.getsize(file_path)
+    
+    # CSV 文件
+    if is_csv_file(file_path):
+        return _preview_csv(file_path, preview_rows, file_size)
+    
     is_xls = is_xls_file(file_path)
 
     if is_xls:
@@ -91,7 +103,7 @@ def run(file_path: str, sheet_index: int = 0, preview_rows: int = 20) -> dict:
 def read_first_cols(file_path: str, sheet_index: int = 0,
                     n_cols: int = 2, max_rows: int = 500) -> dict:
     """
-    读取 Excel 前 n_cols 列的纵向数据（过滤尾部空行），供 LLM 判断表头/数据行位置。
+    读取前 n_cols 列的纵向数据（过滤尾部空行），供 LLM 判断表头/数据行位置。
 
     返回:
         {
@@ -99,6 +111,10 @@ def read_first_cols(file_path: str, sheet_index: int = 0,
             "raw_row_count": int,            # 原始总行数（含尾部空行）
         }
     """
+    # CSV 文件
+    if is_csv_file(file_path):
+        return _read_first_cols_csv(file_path, n_cols, max_rows)
+    
     is_xls = is_xls_file(file_path)
     if is_xls:
         return _read_first_cols_xls(file_path, sheet_index, n_cols, max_rows)
@@ -540,5 +556,194 @@ def _read_first_cols_xls_via_biff8(file_path: str, sheet_index: int,
     while rows and is_empty_row(rows[-1]):
         rows.pop()
     return {"first_col_data": rows, "raw_row_count": max_row}
+
+
+# ============================================================================
+# CSV 解析器 — 支持自动检测分隔符（逗号/制表符/分号）和编码（UTF-8/GBK/GB2312 等）
+# ============================================================================
+
+def _detect_csv_encoding(file_path: str) -> str:
+    """自动检测 CSV 文件编码"""
+    # 优先尝试 UTF-8（含 BOM）
+    with open(file_path, 'rb') as f:
+        raw = f.read(8192)  # 读取前 8KB 用于检测
+    
+    # 检查 BOM
+    if raw.startswith(b'\xef\xbb\xbf'):
+        return 'utf-8-sig'
+    if raw.startswith(b'\xff\xfe'):
+        return 'utf-16-le'
+    if raw.startswith(b'\xfe\xff'):
+        return 'utf-16-be'
+    
+    # 尝试 UTF-8
+    try:
+        raw.decode('utf-8')
+        return 'utf-8'
+    except UnicodeDecodeError:
+        pass
+    
+    # 尝试 GBK/GB2312/GB18030
+    for enc in ('gbk', 'gb2312', 'gb18030'):
+        try:
+            raw.decode(enc)
+            return enc
+        except UnicodeDecodeError:
+            pass
+    
+    # 尝试 Latin1（不会失败）
+    return 'latin1'
+
+
+def _detect_csv_delimiter(file_path: str, encoding: str) -> str:
+    """自动检测 CSV 分隔符（逗号/制表符/分号/竖线）"""
+    import csv
+    
+    with open(file_path, 'r', encoding=encoding, errors='replace') as f:
+        sample = f.read(8192)  # 读取前 8KB 用于检测
+    
+    try:
+        sniffer = csv.Sniffer()
+        dialect = sniffer.sniff(sample, delimiters=',\t;|')
+        return dialect.delimiter
+    except csv.Error:
+        # Sniffer 失败，按常见优先级猜测
+        # 统计各分隔符在第一行的出现次数
+        first_line = sample.split('\n')[0] if '\n' in sample else sample
+        counts = {
+            '\t': first_line.count('\t'),
+            ',': first_line.count(','),
+            ';': first_line.count(';'),
+            '|': first_line.count('|'),
+        }
+        best = max(counts, key=counts.get)
+        if counts[best] > 0:
+            return best
+        return ','  # 默认逗号
+
+
+class CSVColumnMismatchError(ValueError):
+    """CSV 行列数超出 header（首行），通常因内容中包含多余分隔符"""
+    pass
+
+
+def _read_csv_all(file_path: str) -> tuple:
+    """
+    读取 CSV 文件全部数据。
+    
+    返回:
+        (rows, delimiter, encoding)
+        - rows: list[list] — 二维数据
+        - delimiter: str — 检测到的分隔符
+        - encoding: str — 检测到的编码
+    
+    异常:
+        CSVColumnMismatchError: 当某行列数超出 header（首行）时抛出，
+            通常原因是内容中包含多余的分隔符（如逗号），需人工处理。
+    """
+    import csv
+    
+    encoding = _detect_csv_encoding(file_path)
+    delimiter = _detect_csv_delimiter(file_path, encoding)
+    
+    rows = []
+    with open(file_path, 'r', encoding=encoding, errors='replace', newline='') as f:
+        reader = csv.reader(f, delimiter=delimiter)
+        for row in reader:
+            rows.append(row)
+    
+    # 列数一致性校验：header（首行）为基准
+    if rows:
+        header_col_count = len(rows[0])
+        mismatch_rows = []
+        for i, row in enumerate(rows[1:], start=2):  # 行号从 2 开始（1-based）
+            if len(row) > header_col_count:
+                mismatch_rows.append((i, len(row)))
+        
+        if mismatch_rows:
+            sample = mismatch_rows[:5]  # 最多展示前 5 行
+            sample_detail = ", ".join(f"第{r[0]}行({r[1]}列)" for r in sample)
+            total = len(mismatch_rows)
+            more = f"，共 {total} 行" if total > 5 else ""
+            raise CSVColumnMismatchError(
+                f"CSV 列数不一致：header 有 {header_col_count} 列，"
+                f"但部分行超出（{sample_detail}{more}）。"
+                f"原因通常是数据内容中包含多余的分隔符「{delimiter}」，"
+                f"需人工检查并修正后重新入库"
+            )
+        
+        # 短行补 None（与 Excel 空单元格行为一致）
+        max_col = header_col_count
+        for i, row in enumerate(rows):
+            if len(row) < max_col:
+                rows[i] = list(row) + [None] * (max_col - len(row))
+    
+    return rows, delimiter, encoding
+
+
+def _preview_csv(file_path: str, preview_rows: int, file_size: int) -> dict:
+    """预览 CSV 文件（单 sheet，无合并单元格）"""
+    try:
+        rows, delimiter, encoding = _read_csv_all(file_path)
+    except CSVColumnMismatchError as e:
+        return {"error": str(e)}
+    except Exception as e:
+        return {"error": f"CSV 文件打开失败: {e}"}
+    
+    sheet_name = os.path.splitext(os.path.basename(file_path))[0]
+    
+    # 计算实际行列数
+    max_row = len(rows)
+    max_col = max(len(r) for r in rows) if rows else 0
+    
+    # 取前 N 行预览，补齐列数
+    preview_data = []
+    for row in rows[:preview_rows]:
+        padded = list(row) + [None] * (max_col - len(row))
+        preview_data.append(padded)
+    
+    return {
+        "file_path": file_path,
+        "file_size": file_size,
+        "sheet_names": [sheet_name],
+        "sheet_index": 0,
+        "sheet_name": sheet_name,
+        "max_row": max_row,
+        "max_col": max_col,
+        "merged_count": 0,
+        "preview_data": preview_data,
+        "is_xls": False,
+        "is_csv": True,
+        "_csv_delimiter": delimiter,
+        "_csv_encoding": encoding,
+    }
+
+
+def _read_first_cols_csv(file_path: str, n_cols: int, max_rows: int) -> dict:
+    """读取 CSV 文件前 n_cols 列纵向数据"""
+    try:
+        rows, _, _ = _read_csv_all(file_path)
+    except CSVColumnMismatchError:
+        raise  # 列数不一致，向上抛出让 orchestrator 写入 error_message
+    except Exception:
+        return {"first_col_data": [], "raw_row_count": 0}
+    
+    raw_row_count = len(rows)
+    result = []
+    for row in rows[:max_rows]:
+        col_data = []
+        for c in range(min(n_cols, len(row))):
+            col_data.append(row[c] if c < len(row) else None)
+        # 不足 n_cols 列时补 None
+        while len(col_data) < n_cols:
+            col_data.append(None)
+        result.append(col_data)
+    
+    # 过滤尾部空行
+    while result and is_empty_row(result[-1]):
+        result.pop()
+    
+    return {"first_col_data": result, "raw_row_count": raw_row_count}
+
 
     

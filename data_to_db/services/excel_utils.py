@@ -30,6 +30,11 @@ def is_xls_file(file_path: str) -> bool:
     return file_path.lower().endswith(".xls") and not file_path.lower().endswith(".xlsx")
 
 
+def is_csv_file(file_path: str) -> bool:
+    """判断文件是否为 .csv 格式"""
+    return file_path.lower().endswith(".csv")
+
+
 def is_title_row(row) -> bool:
     """判断是否为标题行：所有非空单元格的值相同（合并单元格展开后的表名行）"""
     non_empty = [str(v).strip() for v in row if v is not None and str(v).strip() != ""]
