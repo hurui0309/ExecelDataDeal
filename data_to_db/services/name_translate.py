@@ -47,7 +47,7 @@ Sheet名：{sheet_name}
 
 
 def run(file_path: str, sheet_name: str, preview_data: list, column_hints: list = None,
-        llm_client: LLMClient = None, max_retries: int = 2, preview_rows: int = 5) -> dict:
+        llm_client: LLMClient = None, max_retries: int = 1, preview_rows: int = 5) -> dict:
     """
     调用大模型翻译表名和列名。
 

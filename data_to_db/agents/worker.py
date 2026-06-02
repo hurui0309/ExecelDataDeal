@@ -38,6 +38,22 @@ def _fallback_table_name(file_path: str, sheet_name: str, sheet_index: int) -> s
     return name
 
 
+def _skip_translate_exceeded(file_path: str, sheet_name: str, sheet_index: int,
+                              strategy_name: str, start_time: float) -> dict:
+    """翻译重试次数超限时返回的跳过结果"""
+    elapsed = int((time.time() - start_time) * 1000)
+    logger.warning(f"      [跳过] 翻译重试超限，跳过文件: {os.path.basename(file_path)}")
+    return {
+        "success": False,
+        "skip": True,
+        "table_name": "",
+        "strategy": strategy_name,
+        "rows_written": 0,
+        "error": "翻译LLM重试超过上限，跳过该文件",
+        "parse_time_ms": elapsed,
+    }
+
+
 def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
         config: dict, llm_client: LLMClient, preview_info: dict | None = None) -> dict:
     """
@@ -169,6 +185,8 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
         logger.info(f"      [耗时] 策略解析(首次): {(time.time() - t_parse) * 1000:.0f}ms")
 
         # Step 2: 翻译列名
+        translate_attempts = 0  # 追踪总翻译LLM调用次数，上限3次
+        MAX_TRANSLATE_ATTEMPTS = 3
         has_subtables = "subtables" in parse_result
         # 准备一份 preview_info 给翻译用：优先使用 orchestrator 透传，否则现拉
         if preview_info is None:
@@ -188,6 +206,10 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
             # 给第一个子表也传它自己的局部数据预览（前几行），避免共用原始 Excel 预览
             # 导致 LLM 缺乏数据上下文而翻译失败
             first_sub_preview = first_subtable.get("rows", [])[:5] or preview_info.get("preview_data", [])
+            translate_attempts += 1
+            if translate_attempts > MAX_TRANSLATE_ATTEMPTS:
+                return _skip_translate_exceeded(file_path, sheet_name, sheet_index,
+                                                strategy_name, start_time)
             translate_result = name_translate.run(
                 file_path=file_path,
                 sheet_name=sheet_name,
@@ -208,6 +230,10 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
             # 后续子表独立翻译
             for sub_idx in range(1, len(parse_result["subtables"])):
                 sub = parse_result["subtables"][sub_idx]
+                translate_attempts += 1
+                if translate_attempts > MAX_TRANSLATE_ATTEMPTS:
+                    logger.warning(f"      翻译重试超过{MAX_TRANSLATE_ATTEMPTS}次，跳过子表{sub_idx}翻译，使用sanitize兜底")
+                    continue
                 # 给子表传它自己的局部数据预览（前几行），避免所有子表共用第一份预览
                 sub_preview = sub.get("rows", [])[:5] or preview_info.get("preview_data", [])
                 sub_translate = name_translate.run(
@@ -253,6 +279,11 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
             t_translate = time.time()
             cn_columns = parse_result.get("columns", [])
             # 首次翻译也传 column_hints，确保 _fix_numeric_mismatches 等校验函数能执行
+            translate_attempts += 1
+            if translate_attempts > MAX_TRANSLATE_ATTEMPTS:
+                logger.error(f"      翻译重试超过{MAX_TRANSLATE_ATTEMPTS}次，跳过文件: {os.path.basename(file_path)}")
+                return _skip_translate_exceeded(file_path, sheet_name, sheet_index,
+                                                strategy_name, start_time)
             translate_result = name_translate.run(
                 file_path=file_path,
                 sheet_name=sheet_name,
@@ -277,6 +308,11 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
 
             # 首次翻译失败，用策略解析出的中文列名做二次翻译
             if translate_failed and cn_columns:
+                translate_attempts += 1
+                if translate_attempts > MAX_TRANSLATE_ATTEMPTS:
+                    logger.error(f"      翻译重试超过{MAX_TRANSLATE_ATTEMPTS}次，跳过文件: {os.path.basename(file_path)}")
+                    return _skip_translate_exceeded(file_path, sheet_name, sheet_index,
+                                                    strategy_name, start_time)
                 t_retry = time.time()
                 retry_result = name_translate.run(
                     file_path=file_path,

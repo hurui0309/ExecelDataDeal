@@ -22,7 +22,7 @@ MYSQL_MAX_ROW_SIZE = 65535
 # utf8mb4 每字符最大字节数
 CHARSET_BYTES_PER_CHAR = 4
 # 大宽表列数阈值（超过此值直接 SKIP，MySQL 行格式限制）
-WIDE_TABLE_COLUMN_LIMIT = 100
+WIDE_TABLE_COLUMN_LIMIT = 200
 
 
 def sanitize_column_name(name: str) -> str:

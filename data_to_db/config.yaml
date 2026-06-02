@@ -50,7 +50,7 @@ parse:
   # ODS 层字段默认类型和长度
   default_varchar_length: 512
   # 大宽表列数阈值（超过此列数直接 SKIP，避免 MySQL 建表失败）
-  max_columns: 100
+  max_columns: 200
   # 字段名最大长度
   max_column_name_length: 64
   # 表名最大长度
@@ -83,7 +83,7 @@ parse:
 
 # ===== 日志配置 =====
 logging:
-  level: "INFO"
+  level: "DEBUG"
   # 日志文件路径（支持 strftime 时间模板）
   file: "./logs/datadeal_%Y%m%d_%H%M%S.log"
   # 日志轮转配置
