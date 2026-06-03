@@ -272,6 +272,9 @@ def run(decision: dict, file_path: str, sheet_index: int, sheet_name: str,
                         for c in cols
                     ]
 
+            # 子表地区前缀修正：如果翻译结果缺少地区前缀，根据 label 补充
+            _apply_subtable_region_prefix(parse_result.get("subtables", []), column_descriptions)
+
             logger.info(f"      [耗时] 翻译(子表独立): {(time.time() - t_translate) * 1000:.0f}ms")
 
         else:
@@ -716,4 +719,72 @@ def _llm_detect_horizontal_regions(preview_data: list, file_path: str,
         logger.warning(f"      LLM横向分区检测异常: {e}")
         return None
 
-    
+
+# ── 子表地区前缀修正 ──
+
+# 中文地区关键词 → 英文前缀映射
+_REGION_PREFIX_MAP = [
+    ("东部城市", "east_urban"),
+    ("中部城市", "central_urban"),
+    ("西部城市", "west_urban"),
+    ("东部农村", "east_rural"),
+    ("中部农村", "central_rural"),
+    ("西部农村", "west_rural"),
+    ("城市", "city"),
+    ("农村", "rural"),
+    ("全国", "national"),
+]
+
+
+def _apply_subtable_region_prefix(subtables: list, column_descriptions: dict):
+    """对子表的英文列名和列描述补充地区前缀。
+
+    当 LLM 翻译子表列名时未能保留中文列名中的地区前缀时，
+    根据子表 label 中的地区关键词补充对应英文前缀。
+    """
+    if not subtables or len(subtables) <= 1:
+        return
+
+    for sub_idx, sub in enumerate(subtables):
+        label = sub.get("label", "")
+        if not label:
+            continue
+
+        # 从 label 中匹配地区前缀（优先匹配更具体的关键词）
+        en_prefix = None
+        cn_prefix = None
+        for cn_kw, en_kw in _REGION_PREFIX_MAP:
+            if cn_kw in label:
+                en_prefix = en_kw
+                cn_prefix = cn_kw
+                break  # 已按优先级排列，匹配到即停
+
+        if not en_prefix:
+            continue
+
+        cols = sub.get("columns", [])
+        new_cols = []
+        for ci, col in enumerate(cols):
+            # 保留 year/id 等公共列不加前缀
+            if col in ("year", "id") or col.startswith("_"):
+                new_cols.append(col)
+                continue
+            # 已经含有该前缀的跳过
+            if col.startswith(en_prefix + "_"):
+                new_cols.append(col)
+                continue
+            new_col = f"{en_prefix}_{col}"
+            # 截断到 64 字符
+            if len(new_col) > 64:
+                new_col = new_col[:64]
+            new_cols.append(new_col)
+
+            # 更新 column_descriptions 中的映射
+            if col in column_descriptions:
+                desc = column_descriptions.pop(col)
+                # 如果中文描述中缺少地区前缀，补充
+                if cn_prefix not in desc:
+                    desc = f"{cn_prefix}{desc}"
+                column_descriptions[new_col] = desc
+
+        sub["columns"] = new_cols

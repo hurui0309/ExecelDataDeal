@@ -36,8 +36,17 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list | N
     # 第一行为列名
     header_row = data[0]
     columns = [str(c).strip() if c is not None else "" for c in header_row]
-    if column_names and len(column_names) == len(columns):
-        columns = list(column_names)
+    if column_names:
+        if len(column_names) == len(columns):
+            columns = list(column_names)
+        elif len(column_names) < len(columns):
+            from services.mysql_writer import sanitize_column_name
+            padded = list(column_names)
+            for j in range(len(column_names), len(columns)):
+                padded.append(sanitize_column_name(columns[j]))
+            columns = padded
+        else:
+            columns = column_names[:len(columns)]
 
     rows: list[list] = []
     for row in data[1:]:

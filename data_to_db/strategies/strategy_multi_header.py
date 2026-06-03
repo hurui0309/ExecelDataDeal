@@ -285,8 +285,25 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
     )
 
     # 如果提供了英文列名，用英文列名替换
-    if column_names and len(column_names) == len(columns):
-        columns = column_names
+    if column_names:
+        if len(column_names) == len(columns):
+            columns = column_names
+        elif len(column_names) < len(columns):
+            # LLM 列名不足，用 sanitize 兜底补齐
+            from services.mysql_writer import sanitize_column_name
+            padded = list(column_names)
+            for j in range(len(column_names), len(columns)):
+                padded.append(sanitize_column_name(columns[j]))
+            columns = padded
+            _tmp_logger.info(
+                f"    [strategy_multi_header] 翻译列名不足: {len(column_names)} < {len(columns)}，补齐"
+            )
+        else:
+            # LLM 列名过多，截断
+            columns = column_names[:len(columns)]
+            _tmp_logger.info(
+                f"    [strategy_multi_header] 翻译列名过多: {len(column_names)} > {len(columns)}，截断"
+            )
 
     # 将"X年为Y年pct"模式的列名直接转为英文 "pct_X_of_Y"
     # 避免传递给 name_translate 时 LLM 丢失"X年为"前缀
@@ -313,8 +330,17 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
         from services.mysql_writer import make_unique_columns
         columns = make_unique_columns(columns)
         columns = [rename_id_col(c) for c in columns]
-        if column_names and len(column_names) == len(columns):
-            columns = column_names
+        if column_names:
+            if len(column_names) == len(columns):
+                columns = column_names
+            elif len(column_names) < len(columns):
+                from services.mysql_writer import sanitize_column_name
+                padded = list(column_names)
+                for j in range(len(column_names), len(columns)):
+                    padded.append(sanitize_column_name(columns[j]))
+                columns = padded
+            else:
+                columns = column_names[:len(columns)]
     elif auto_data_start >= 0 and auto_data_start > actual_data_start:
         # 自动检测的 data_start 更晚，说明 header_end+1 到 auto_data_start 之间
         # 存在分类标题行（如"一、农垦系统"），这些行应保留在数据区，

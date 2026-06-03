@@ -161,7 +161,18 @@ def _extract_from_data(data, header_row_index, column_names):
     columns = [str(c).strip() if c is not None else '' for c in header_row]
     
     if column_names:
-        columns = column_names
+        if len(column_names) == len(columns):
+            columns = column_names
+        elif len(column_names) < len(columns):
+            # LLM 列名不足，用 sanitize 兜底补齐
+            from services.mysql_writer import sanitize_column_name
+            padded = list(column_names)
+            for j in range(len(column_names), len(columns)):
+                padded.append(sanitize_column_name(columns[j]))
+            columns = padded
+        else:
+            # LLM 列名过多，截断
+            columns = column_names[:len(columns)]
     
     header_col_count = len([c for c in columns if c != ''])
     if header_col_count == 0:

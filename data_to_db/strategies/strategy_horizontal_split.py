@@ -248,11 +248,23 @@ def _extract_from_llm_regions(data: list, regions: list, column_names: list = No
         col_end = min(col_end + 1, n_cols)
         col_end = max(col_start + 1, min(col_end, n_cols))
 
-        # 按列范围提取区域数据
-        region_data = [row[col_start:col_end] for row in data]
+        # 按列范围提取区域数据（支持 prepend_cols：从非连续列预拼关键列）
+        prepend_cols = region.get("prepend_cols", [])
+        if prepend_cols:
+            region_data = []
+            for row in data:
+                prepended = [row[c] if c < len(row) else None for c in prepend_cols]
+                region_data.append(prepended + row[col_start:col_end])
+            if column_names:
+                prepend_col_names = [column_names[c] if c < len(column_names) else None for c in prepend_cols]
+                region_cols = prepend_col_names + list(column_names[col_start:col_end])
+            else:
+                region_cols = None
+        else:
+            region_data = [row[col_start:col_end] for row in data]
+            region_cols = column_names[col_start:col_end] if column_names else None
         region_data = _trim_left_empty_cols(region_data)
         region_data = _trim_right_empty_cols(region_data)
-        region_cols = column_names[col_start:col_end] if column_names else None
 
         # 用区域自身的表头信息提取
         # row_has_hborder 是全局行的框线信息，对子区域同样适用
@@ -402,8 +414,17 @@ def _extract_region(data: list, header_start: int, header_end: int,
         llm_client, code_columns=columns
     )
 
-    if column_names and len(column_names) == len(columns):
-        columns = column_names
+    if column_names:
+        if len(column_names) == len(columns):
+            columns = column_names
+        elif len(column_names) < len(columns):
+            from services.mysql_writer import sanitize_column_name
+            padded = list(column_names)
+            for j in range(len(column_names), len(columns)):
+                padded.append(sanitize_column_name(columns[j]))
+            columns = padded
+        else:
+            columns = column_names[:len(columns)]
 
     # 合并层级指标列
     actual_data_start = header_end + 1

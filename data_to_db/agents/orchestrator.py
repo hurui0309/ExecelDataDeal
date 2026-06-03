@@ -214,6 +214,90 @@ class Orchestrator:
 
         sheet_preview: dict = {}
 
+        # Step 0: Sheet 级 override（跳过 Classifier，直接指定策略和参数）
+        override_decision = self._check_sheet_override(source_filename, sheet_name)
+        if override_decision:
+            logger.info(f"    Sheet override 命中: strategy={override_decision.get('strategy')}")
+            decision = override_decision
+            # 直接跳到 Step 4 确定表名 → Step 5 Worker 执行
+            strategy = decision.get("strategy", "UNKNOWN")
+            table_name_hint = decision.get("table_name_hint", "") or ""
+            if table_name_hint and has_multiple_sheets and sheet_name:
+                sheet_suffix = sanitize_column_name(sheet_name)
+                table_name_hint = f"{table_name_hint}_{sheet_suffix}"
+                if len(table_name_hint) > MYSQL_IDENT_MAX:
+                    table_name_hint = table_name_hint[:MYSQL_IDENT_MAX]
+            table_name_hint = self._ensure_unique_table_name(table_name_hint)
+            decision["table_name_hint"] = table_name_hint
+
+            t_worker = time.time()
+            worker_result = worker_run(
+                decision=decision,
+                file_path=file_path,
+                sheet_index=sheet_index,
+                sheet_name=sheet_name,
+                config=self.config,
+                llm_client=self.llm_client,
+                preview_info=None,
+            )
+            logger.info(f"    [耗时] Worker(override): {_fmt_ms((time.time() - t_worker) * 1000)}")
+            elapsed = int((time.time() - start_time) * 1000)
+
+            # 记录日志（复用 Step 6 逻辑）
+            subtable_results = worker_result.get("subtable_results")
+            if subtable_results:
+                for st_idx, st in enumerate(subtable_results):
+                    st_success = st.get("success", False)
+                    if st_success and st.get("rows_written", 0) == 0:
+                        st_success = False
+                        st["skip"] = True
+                    self._log_parse_result(conn, {
+                        "source_path": file_path, "source_filename": source_filename,
+                        "sheet_name": sheet_name, "sheet_index": sheet_index,
+                        "subtable_index": st_idx + 1 if len(subtable_results) > 1 else 0,
+                        "subtable_label": st.get("label"),
+                        "parse_strategy": strategy, "agent": "Worker",
+                        "status": "SKIP" if st.get("skip") else ("SUCCESS" if st_success else "ERROR"),
+                        "table_name": st["table_name"],
+                        "actual_row_count": st.get("rows_written", 0),
+                        "column_count": None,
+                        "column_names": worker_result.get("column_names_json"),
+                        "table_description": worker_result.get("table_description"),
+                        "error_message": st.get("error"),
+                        "file_size_bytes": file_size, "is_xls": is_xls,
+                        "has_merged_cells": False, "merged_cells_count": 0,
+                        "parse_time_ms": elapsed,
+                    }, raw_row_count=raw_row_count)
+            else:
+                table_name = worker_result.get("table_name") or table_name_hint or _safe_error_table_name("ERROR", source_filename, sheet_name, sheet_index)
+                is_skip = worker_result.get("skip", False)
+                if not is_skip and worker_result.get("success") and worker_result.get("rows_written", 0) == 0:
+                    is_skip = True
+                self._log_parse_result(conn, {
+                    "source_path": file_path, "source_filename": source_filename,
+                    "sheet_name": sheet_name, "sheet_index": sheet_index,
+                    "parse_strategy": strategy, "agent": "Worker",
+                    "status": "SKIP" if is_skip else ("SUCCESS" if worker_result.get("success") else "ERROR"),
+                    "table_name": table_name,
+                    "actual_row_count": worker_result.get("rows_written", 0),
+                    "column_count": None,
+                    "column_names": worker_result.get("column_names_json"),
+                    "table_description": worker_result.get("table_description"),
+                    "error_message": worker_result.get("error"),
+                    "file_size_bytes": file_size, "is_xls": is_xls,
+                    "has_merged_cells": False, "merged_cells_count": 0,
+                    "parse_time_ms": elapsed,
+                }, raw_row_count=raw_row_count)
+
+            if worker_result.get("skip"):
+                self.stats["skip"] += 1
+            elif worker_result.get("success"):
+                self.stats["success"] += 1
+            else:
+                self.stats["error"] += 1
+                logger.error(f"    ✗ override 执行失败: {worker_result.get('error', '')}")
+            return
+
         # Step 1: 框线预分类
         border_preclassify_result = None
         try:
@@ -505,6 +589,63 @@ class Orchestrator:
                 f"    ✗ 执行失败: {worker_result.get('error', '')} (总耗时: {_fmt_ms(elapsed)})\n"
                 f"    策略={strategy}, 文件={source_filename}, Sheet={sheet_name}"
             )
+
+    # ── Sheet 级 override 配置 ──
+    # 针对特定文件+Sheet 提供硬编码的策略和参数，跳过 Classifier
+    _SHEET_OVERRIDES = {
+        ("粮食数据收集(插补）.xlsx", "慢性病"): {
+            "strategy": "strategy_horizontal_split",
+            "confidence": 1.0,
+            "table_name_hint": "ods_chronic_disease_prevalence",
+            "params": {
+                "header_start": 0,
+                "header_end": 2,
+                "data_start": 3,
+                "regions": [
+                    {"col_start": 0, "col_end": 9, "label": "全国慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3},
+                    {"col_start": 10, "col_end": 19, "label": "城市慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 20, "col_end": 29, "label": "农村慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 30, "col_end": 39, "label": "15岁及以上东部城市居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 40, "col_end": 49, "label": "15岁及以上中部城市居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 50, "col_end": 59, "label": "15岁及以上西部城市居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 60, "col_end": 69, "label": "15岁及以上东部农村居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 70, "col_end": 79, "label": "15岁及以上中部农村居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                    {"col_start": 80, "col_end": 89, "label": "15岁及以上西部农村居民慢性病患病率",
+                     "header_start": 0, "header_end": 2, "data_start": 3,
+                     "prepend_cols": [0]},
+                ],
+            },
+        },
+    }
+
+    def _check_sheet_override(self, source_filename: str, sheet_name: str) -> dict | None:
+        """检查是否有 sheet 级 override，返回 decision dict 或 None。"""
+        key = (source_filename, sheet_name)
+        override = self._SHEET_OVERRIDES.get(key)
+        if override:
+            return {
+                "strategy": override["strategy"],
+                "confidence": override.get("confidence", 1.0),
+                "table_name_hint": override.get("table_name_hint", ""),
+                "params": override.get("params", {}),
+                "reasoning": f"Sheet override: {source_filename}/{sheet_name}",
+            }
+        return None
 
     def _ensure_unique_table_name(self, table_name: str) -> str:
         """全局表名去重，追加序号后确保不超过 64 字符。

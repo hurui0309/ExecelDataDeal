@@ -116,6 +116,29 @@ def run(file_path: str, sheet_name: str, preview_data: list, column_hints: list 
 
                 # 校验：确保中文列名中的数字/年份在英文列名中被保留
                 if column_hints:
+                    # 列数不匹配时，截断或补齐 en_cols 使其与 column_hints 对齐
+                    en_cols = result["column_names"]
+                    cn_len = len(column_hints)
+                    en_len = len(en_cols)
+                    if en_len != cn_len:
+                        from services.mysql_writer import sanitize_column_name
+                        if en_len < cn_len:
+                            # LLM 返回不足，用 sanitize 兜底补齐
+                            padded = list(en_cols)
+                            for j in range(en_len, cn_len):
+                                padded.append(sanitize_column_name(column_hints[j]))
+                            en_cols = padded
+                            logger.info(
+                                f"    [translate] 列数不匹配: LLM返回{en_len}列 < 期望{cn_len}列，补齐{cn_len - en_len}列"
+                            )
+                        else:
+                            # LLM 返回过多，截断
+                            en_cols = en_cols[:cn_len]
+                            logger.info(
+                                f"    [translate] 列数不匹配: LLM返回{en_len}列 > 期望{cn_len}列，截断{en_len - cn_len}列"
+                            )
+                        result["column_names"] = en_cols
+
                     before_numeric = list(result["column_names"])
                     result["column_names"] = _fix_numeric_mismatches(
                         column_hints, result["column_names"]

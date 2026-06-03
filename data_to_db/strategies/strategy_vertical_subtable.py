@@ -176,8 +176,17 @@ def run(file_path: str, sheet_name: str, table_name: str, column_names: list = N
             llm_client, code_columns=columns
         )
 
-        if column_names and len(column_names) == len(columns):
-            columns = column_names
+        if column_names:
+            if len(column_names) == len(columns):
+                columns = column_names
+            elif len(column_names) < len(columns):
+                from services.mysql_writer import sanitize_column_name
+                padded = list(column_names)
+                for j in range(len(column_names), len(columns)):
+                    padded.append(sanitize_column_name(columns[j]))
+                columns = padded
+            else:
+                columns = column_names[:len(columns)]
 
         sub_data = [list(row) for row in data[d_start:min(d_end, len(data))]]
         sub_hborder = row_has_hborder[d_start:min(d_end, len(data))] if row_has_hborder else None
